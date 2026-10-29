@@ -1,0 +1,28 @@
+# torch must come from the CUDA 12.1 index (DiariZen pins torch 2.1.1):
+#   pip install torch==2.1.1 torchvision==0.16.1 torchaudio==2.1.1 --index-url https://download.pytorch.org/whl/cu121
+# then:  pip install -e third_party/DiariZen -e third_party/DiariZen/pyannote-audio -c third_party/DiariZen/constraints.txt
+numpy==1.26.4
+accelerate==1.6.0
+einops
+h5py
+joblib
+librosa
+pandas
+psutil
+pyyaml
+scipy
+soundfile
+tabulate
+toml
+torchinfo
+tqdm
+thop
+tensorboard
+# ASR: ctranslate2 4.4.x is the last line built against cuDNN 8 (shared with torch 2.1.1)
+faster-whisper==1.1.1
+ctranslate2==4.4.0
+# eval
+whisper-normalizer
+rapidfuzz
+pytest
+patchelf

@@ -1,0 +1,9 @@
+.venv/
+.bootstrap/
+data/
+results/*/hyp/
+results/tune_cache/
+results/*.log
+__pycache__/
+*.pyc
+out/
