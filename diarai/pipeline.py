@@ -112,11 +112,13 @@ def transcribe_unit(models: Models, audio: np.ndarray, language: str, offset: fl
     if prompt == "default":
         prompt = config.PROMPTS.get(language)
     dur = len(audio) / SAMPLE_RATE
-    # Bound the output to what the audio can hold (~20 tokens/s covers Devanagari's byte-level tokens).
+    # Bound the output to what the audio can hold. Fast Hindi in Devanagari runs to ~25 byte-level
+    # tokens/s, so allow 32/s (a lower cap cut real sentences mid-character).
     # On noisy phone audio Whisper can otherwise loop on a phrase until the 448-token limit, and with beam
     # search that decoder state outgrows a 4 GB GPU.
-    prompt_tokens = 2 * len(prompt) if prompt else 0
-    kw["max_new_tokens"] = max(16, min(440 - prompt_tokens // 2, int(24 + 20 * dur)))
+    # The prompt shares Whisper's 448-token window with the output (plus a few special tokens).
+    prompt_tokens = len(model.hf_tokenizer.encode(" " + prompt.strip()).ids) if prompt else 0
+    kw["max_new_tokens"] = max(16, min(448 - 8 - prompt_tokens, int(32 + 32 * dur)))
     try:
         segments = decode(model, audio, language=language, beam_size=beam_size, initial_prompt=prompt,
                           word_timestamps=word_timestamps, condition_on_previous_text=False, vad_filter=False,
@@ -132,12 +134,13 @@ def transcribe_unit(models: Models, audio: np.ndarray, language: str, offset: fl
         torch.cuda.empty_cache()
         return []
     segments = [s for s in segments if not (s.no_speech_prob > 0.6 and s.avg_logprob < -1.0)]
+    clean = lambda t: t.replace("\ufffd", "").strip()  # a byte-level token cut mid-character
     if word_timestamps:
-        words = [Word(w.start + offset, w.end + offset, w.word.strip(), w.probability, speaker)
-                 for s in segments for w in (s.words or []) if w.word.strip()]
+        words = [Word(w.start + offset, w.end + offset, clean(w.word), w.probability, speaker)
+                 for s in segments for w in (s.words or []) if clean(w.word)]
     else:
-        words = [Word(s.start + offset, s.end + offset, s.text.strip(), float(np.exp(s.avg_logprob)), speaker)
-                 for s in segments if s.text.strip()]
+        words = [Word(s.start + offset, s.end + offset, clean(s.text), float(np.exp(s.avg_logprob)), speaker)
+                 for s in segments if clean(s.text)]
     # a tiny overlapped turn decoded on its own often yields junk: no one says 6+ words per second
     n = sum(len(w.text.split()) for w in words)
     if n > max(1.0, max_words_per_sec * dur):
