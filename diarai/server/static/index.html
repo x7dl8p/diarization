@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>diarai</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='2' y='2' width='12' height='12' rx='3' fill='none' stroke='%2327272a' stroke-width='2'/%3E%3C/svg%3E">
+<script src="/static/app.js" defer></script>
+</head>
+<body>
+<main>
+  <header>
+    <h1>diarai</h1>
+    <span id="status" class="status">idle</span>
+  </header>
+
+  <section class="field">
+    <label for="key">API key</label>
+    <div class="row">
+      <input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="paste your key">
+      <label class="check"><input id="remember" type="checkbox"> remember</label>
+    </div>
+  </section>
+
+  <section id="card" class="card" tabindex="0" aria-label="Audio file">
+    <svg class="ring" aria-hidden="true"><rect class="ring-base"/><rect class="ring-fill"/></svg>
+    <input id="file" type="file" accept="audio/*,video/*" hidden>
+    <div id="pick" class="pick">
+      <p class="big">Drop an audio file</p>
+      <p class="muted">or <button id="browse" class="link" type="button">choose one</button></p>
+    </div>
+    <div id="chosen" class="chosen" hidden>
+      <div class="filemeta">
+        <p id="fname" class="big"></p>
+        <p id="fdur" class="muted mono"></p>
+      </div>
+      <div class="controls">
+        <select id="lang" aria-label="Language">
+          <option value="unknown">Auto language</option>
+          <option value="hi-IN">Hindi</option>
+          <option value="en-IN">English</option>
+        </select>
+        <label class="check"><input id="partials" type="checkbox" checked> live captions</label>
+        <label class="check"><input id="final" type="checkbox" checked> final pass</label>
+        <button id="change" class="link" type="button">change</button>
+        <button id="go" class="btn" type="button">Start</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="transcript">
+    <div class="thead">
+      <h2 id="ttitle">Transcript</h2>
+      <div class="tools" id="tools" hidden>
+        <button id="copy" class="link" type="button">copy</button>
+        <button id="dltxt" class="link" type="button">.txt</button>
+        <button id="dljson" class="link" type="button">.json</button>
+      </div>
+    </div>
+    <div id="lines" class="lines" aria-live="polite">
+      <p class="empty muted">Text appears here while the audio streams.</p>
+    </div>
+  </section>
+</main>
+<audio id="player" preload="metadata" hidden></audio>
+</body>
+</html>

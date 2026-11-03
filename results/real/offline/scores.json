@@ -1,0 +1,110 @@
+{
+ "pooled": {
+  "wer": 0.12201963534361851,
+  "cpwer": 0.13043478260869565,
+  "cer": 0.06642335766423357,
+  "cpcer": 0.07043795620437956,
+  "der": 0.018023000321609712
+ },
+ "files": [
+  {
+   "uri": "podcast_hi",
+   "language": "hi",
+   "detected_language": "hi",
+   "duration": 60.709,
+   "ref_words": 225,
+   "ref_chars": 765,
+   "wer": 0.17777777777777778,
+   "cer": 0.09673202614379085,
+   "cpwer": 0.1688888888888889,
+   "cpcer": 0.08627450980392157,
+   "der": 0.027332144979203575,
+   "der_parts": {
+    "missed detection": 0.0,
+    "false alarm": 0.027332144979203575,
+    "confusion": 0.0
+   },
+   "ref_speakers": 2,
+   "hyp_speakers": 2,
+   "speaker_map": {
+    "SPEAKER_02": "S2",
+    "SPEAKER_01": "S1"
+   },
+   "seconds": 55.807
+  },
+  {
+   "uri": "comedy_hi",
+   "language": "hi",
+   "detected_language": "hi",
+   "duration": 45.186,
+   "ref_words": 133,
+   "ref_chars": 472,
+   "wer": 0.21052631578947367,
+   "cer": 0.12076271186440678,
+   "cpwer": 0.18796992481203006,
+   "cpcer": 0.0847457627118644,
+   "der": 0.02557544757033273,
+   "der_parts": {
+    "missed detection": 0.014386189258311997,
+    "false alarm": 0.011189258312020733,
+    "confusion": 0.0
+   },
+   "ref_speakers": 2,
+   "hyp_speakers": 2,
+   "speaker_map": {
+    "SPEAKER_02": "S2",
+    "SPEAKER_01": "S1"
+   },
+   "seconds": 35.643
+  },
+  {
+   "uri": "agent_en",
+   "language": "en",
+   "detected_language": "en",
+   "duration": 69.483,
+   "ref_words": 210,
+   "ref_chars": 889,
+   "wer": 0.05238095238095238,
+   "cer": 0.02699662542182227,
+   "cpwer": 0.05238095238095238,
+   "cpcer": 0.02699662542182227,
+   "der": 0.0,
+   "der_parts": {
+    "missed detection": 0.0,
+    "false alarm": 0.0,
+    "confusion": 0.0
+   },
+   "ref_speakers": 1,
+   "hyp_speakers": 1,
+   "speaker_map": {
+    "SPEAKER_01": "S1"
+   },
+   "seconds": 21.634
+  },
+  {
+   "uri": "meta_en",
+   "language": "en",
+   "detected_language": "en",
+   "duration": 41.813,
+   "ref_words": 145,
+   "ref_chars": 614,
+   "wer": 0.05517241379310345,
+   "cer": 0.043973941368078175,
+   "cpwer": 0.1310344827586207,
+   "cpcer": 0.10260586319218241,
+   "der": 0.026295030239284686,
+   "der_parts": {
+    "missed detection": 0.0,
+    "false alarm": 0.0,
+    "confusion": 0.026295030239284686
+   },
+   "ref_speakers": 3,
+   "hyp_speakers": 2,
+   "speaker_map": {
+    "SPEAKER_01": "S1",
+    "SPEAKER_02": "S2"
+   },
+   "seconds": 14.254
+  }
+ ]
+}

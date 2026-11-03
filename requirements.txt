@@ -21,6 +21,11 @@ tensorboard
 # ASR: ctranslate2 4.4.x is the last line built against cuDNN 8 (shared with torch 2.1.1)
 faster-whisper==1.1.1
 ctranslate2==4.4.0
+# API server
+fastapi
+uvicorn[standard]
+python-multipart
+websockets
 # eval
 whisper-normalizer
 rapidfuzz

@@ -1,0 +1,24 @@
+# systemd unit for the diarai API + web UI.  Install (as root):
+#   cp deploy/diarai.service /etc/systemd/system/ && systemctl daemon-reload && systemctl enable --now diarai
+# Logs: journalctl -u diarai -f
+[Unit]
+Description=diarai speech-to-text + diarization API and web UI
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/projects/diarai
+Environment=HF_HUB_OFFLINE=1
+Environment=PYTHONUNBUFFERED=1
+# bound to localhost; expose it through a TLS front (tailscale serve / reverse proxy)
+ExecStart=/root/projects/diarai/.venv/bin/python -m diarai serve --host 127.0.0.1 --port 8000 --log-level warning
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=180
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

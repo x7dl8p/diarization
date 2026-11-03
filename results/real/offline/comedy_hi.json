@@ -1,0 +1,1140 @@
+{
+ "utterances": [
+  {
+   "speaker": "SPEAKER_02",
+   "start": 0.0,
+   "end": 6.16,
+   "text": "सर सर सर सर ये देखें सर फ्लाइंग कार बना दी सर यूएस में लॉन मस्त ने सर हमें भी कुछ ऐसा ही सोचना पड़ेगा सर",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.2,
+     "text": "सर",
+     "probability": 0.76025390625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 0.2,
+     "end": 0.42,
+     "text": "सर",
+     "probability": 0.9794921875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 0.42,
+     "end": 0.72,
+     "text": "सर",
+     "probability": 0.9970703125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 0.72,
+     "end": 0.92,
+     "text": "सर",
+     "probability": 0.97802734375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 0.92,
+     "end": 1.24,
+     "text": "ये",
+     "probability": 0.9021809895833334,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 1.24,
+     "end": 1.6,
+     "text": "देखें",
+     "probability": 0.9680524553571429,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 1.6,
+     "end": 1.7,
+     "text": "सर",
+     "probability": 0.988525390625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 1.7,
+     "end": 2.2,
+     "text": "फ्लाइंग",
+     "probability": 0.98095703125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 2.2,
+     "end": 2.4,
+     "text": "कार",
+     "probability": 0.99755859375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 2.4,
+     "end": 2.68,
+     "text": "बना",
+     "probability": 0.9989013671875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 2.68,
+     "end": 2.78,
+     "text": "दी",
+     "probability": 0.9962565104166666,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 2.78,
+     "end": 2.96,
+     "text": "सर",
+     "probability": 0.98486328125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 2.96,
+     "end": 3.2,
+     "text": "यूएस",
+     "probability": 0.9758649553571429,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 3.2,
+     "end": 3.36,
+     "text": "में",
+     "probability": 0.9869791666666666,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 3.36,
+     "end": 3.6,
+     "text": "लॉन",
+     "probability": 0.80634765625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 3.6,
+     "end": 3.82,
+     "text": "मस्त",
+     "probability": 0.928466796875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 3.82,
+     "end": 4.36,
+     "text": "ने",
+     "probability": 0.8295084635416666,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 4.36,
+     "end": 4.64,
+     "text": "सर",
+     "probability": 0.9921875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 4.64,
+     "end": 4.88,
+     "text": "हमें",
+     "probability": 0.9945068359375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 4.88,
+     "end": 4.96,
+     "text": "भी",
+     "probability": 0.9869791666666666,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 4.96,
+     "end": 5.2,
+     "text": "कुछ",
+     "probability": 0.99892578125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 5.2,
+     "end": 5.34,
+     "text": "ऐसा",
+     "probability": 0.990478515625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 5.34,
+     "end": 5.44,
+     "text": "ही",
+     "probability": 0.997314453125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 5.44,
+     "end": 5.74,
+     "text": "सोचना",
+     "probability": 0.9993489583333334,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 5.74,
+     "end": 5.98,
+     "text": "पड़ेगा",
+     "probability": 0.99326171875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 5.98,
+     "end": 6.16,
+     "text": "सर",
+     "probability": 0.997802734375,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 7.093,
+   "end": 9.993,
+   "text": "नहीं मैं सोच ही रहा था कि एक ऐसी मशीन बनाए",
+   "words": [
+    {
+     "start": 7.093,
+     "end": 7.493,
+     "text": "नहीं",
+     "probability": 0.928125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 7.493,
+     "end": 7.693,
+     "text": "मैं",
+     "probability": 0.9925130208333334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 7.693,
+     "end": 8.093,
+     "text": "सोच",
+     "probability": 0.9920654296875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 8.093,
+     "end": 8.133,
+     "text": "ही",
+     "probability": 0.933837890625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 8.133,
+     "end": 8.472999999999999,
+     "text": "रहा",
+     "probability": 0.9967041015625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 8.472999999999999,
+     "end": 8.513,
+     "text": "था",
+     "probability": 0.9993489583333334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 8.513,
+     "end": 8.713000000000001,
+     "text": "कि",
+     "probability": 0.982421875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 8.713000000000001,
+     "end": 8.953,
+     "text": "एक",
+     "probability": 0.9969075520833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 8.953,
+     "end": 9.313,
+     "text": "ऐसी",
+     "probability": 0.9951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 9.313,
+     "end": 9.633,
+     "text": "मशीन",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 9.633,
+     "end": 9.993,
+     "text": "बनाए",
+     "probability": 0.9537760416666666,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 9.992,
+   "end": 10.752,
+   "text": "हम्म",
+   "words": [
+    {
+     "start": 9.992,
+     "end": 10.752,
+     "text": "हम्म",
+     "probability": 0.7998046875,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 11.332,
+   "end": 13.112,
+   "text": "जिससे दस मिनट के अन्दर ही",
+   "words": [
+    {
+     "start": 11.332,
+     "end": 11.932,
+     "text": "जिससे",
+     "probability": 0.92919921875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 11.932,
+     "end": 12.292000000000002,
+     "text": "दस",
+     "probability": 0.998046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 12.292000000000002,
+     "end": 12.552000000000001,
+     "text": "मिनट",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 12.552000000000001,
+     "end": 12.692,
+     "text": "के",
+     "probability": 0.999267578125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 12.692,
+     "end": 12.932,
+     "text": "अन्दर",
+     "probability": 0.9129115513392857,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 12.932,
+     "end": 13.112,
+     "text": "ही",
+     "probability": 0.99462890625,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 13.373,
+   "end": 14.093,
+   "text": "हम्म",
+   "words": [
+    {
+     "start": 13.373,
+     "end": 14.093,
+     "text": "हम्म",
+     "probability": 0.91748046875,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 14.013,
+   "end": 16.033,
+   "text": "मेड आपके घर पर आकर बर्तन भांच दे",
+   "words": [
+    {
+     "start": 14.013,
+     "end": 14.673,
+     "text": "मेड",
+     "probability": 0.962890625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 14.673,
+     "end": 14.913,
+     "text": "आपके",
+     "probability": 0.9977213541666666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 14.913,
+     "end": 15.153,
+     "text": "घर",
+     "probability": 0.9986979166666666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 15.153,
+     "end": 15.253,
+     "text": "पर",
+     "probability": 0.9171549479166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 15.253,
+     "end": 15.353,
+     "text": "आकर",
+     "probability": 0.9140625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 15.353,
+     "end": 15.733,
+     "text": "बर्तन",
+     "probability": 0.998291015625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 15.733,
+     "end": 15.933,
+     "text": "भांच",
+     "probability": 0.8505859375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 15.933,
+     "end": 16.033,
+     "text": "दे",
+     "probability": 0.9957682291666666,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 17.433,
+   "end": 18.093,
+   "text": "कैसा",
+   "words": [
+    {
+     "start": 17.433,
+     "end": 18.093,
+     "text": "कैसा",
+     "probability": 0.8399658203125,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 17.553,
+   "end": 18.293,
+   "text": "क्या सा आइडिया",
+   "words": [
+    {
+     "start": 17.553,
+     "end": 17.993000000000002,
+     "text": "क्या",
+     "probability": 0.73846435546875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 17.993000000000002,
+     "end": 18.033,
+     "text": "सा",
+     "probability": 0.89990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 18.033,
+     "end": 18.293,
+     "text": "आइडिया",
+     "probability": 0.974609375,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 18.093,
+   "end": 20.773,
+   "text": "आईडिया नहीं नहीं सर इनोवेशन कुछ नया सर",
+   "words": [
+    {
+     "start": 18.093,
+     "end": 18.293,
+     "text": "आईडिया",
+     "probability": 0.9568684895833334,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 18.293,
+     "end": 18.533,
+     "text": "नहीं",
+     "probability": 0.95166015625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 18.533,
+     "end": 18.893,
+     "text": "नहीं",
+     "probability": 0.99609375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 18.893,
+     "end": 19.012999999999998,
+     "text": "सर",
+     "probability": 0.337158203125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 19.012999999999998,
+     "end": 19.773,
+     "text": "इनोवेशन",
+     "probability": 0.9982421875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 19.773,
+     "end": 20.233,
+     "text": "कुछ",
+     "probability": 0.998828125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 20.233,
+     "end": 20.533,
+     "text": "नया",
+     "probability": 0.9989013671875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 20.533,
+     "end": 20.773,
+     "text": "सर",
+     "probability": 0.994873046875,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 21.933,
+   "end": 30.292,
+   "text": "देखो आइसक्रीम में सीताफॉल का फ्लेवर तो मैंने डाल दिया है अगर आइसक्रीम में मैं भिंडी का फ्लेवर डाल दू तब तो लोग भिंडी खाना शुरू कर देंगे",
+   "words": [
+    {
+     "start": 21.933,
+     "end": 22.373,
+     "text": "देखो",
+     "probability": 0.8090413411458334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 22.373,
+     "end": 22.913,
+     "text": "आइसक्रीम",
+     "probability": 0.9484375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 22.913,
+     "end": 23.233,
+     "text": "में",
+     "probability": 0.9931640625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 23.233,
+     "end": 23.653,
+     "text": "सीताफॉल",
+     "probability": 0.8414849175347222,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 23.653,
+     "end": 23.773,
+     "text": "का",
+     "probability": 0.995361328125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 23.773,
+     "end": 24.073,
+     "text": "फ्लेवर",
+     "probability": 0.99639892578125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 24.073,
+     "end": 24.133,
+     "text": "तो",
+     "probability": 0.96240234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 24.133,
+     "end": 24.313,
+     "text": "मैंने",
+     "probability": 0.928515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 24.313,
+     "end": 24.593,
+     "text": "डाल",
+     "probability": 0.9993896484375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 24.593,
+     "end": 24.773,
+     "text": "दिया",
+     "probability": 0.9845703125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 24.773,
+     "end": 24.853,
+     "text": "है",
+     "probability": 0.995849609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 26.192,
+     "end": 26.632,
+     "text": "अगर",
+     "probability": 0.6796142578125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 26.632,
+     "end": 27.112000000000002,
+     "text": "आइसक्रीम",
+     "probability": 0.9291259765625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 27.112000000000002,
+     "end": 27.312,
+     "text": "में",
+     "probability": 0.9864908854166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 27.312,
+     "end": 27.492,
+     "text": "मैं",
+     "probability": 0.91748046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 27.492,
+     "end": 27.832,
+     "text": "भिंडी",
+     "probability": 0.9792829241071429,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 27.832,
+     "end": 27.992,
+     "text": "का",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 27.992,
+     "end": 28.252,
+     "text": "फ्लेवर",
+     "probability": 0.9984130859375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 28.252,
+     "end": 28.472,
+     "text": "डाल",
+     "probability": 0.999267578125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 28.472,
+     "end": 28.572,
+     "text": "दू",
+     "probability": 0.97607421875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 28.572,
+     "end": 28.872,
+     "text": "तब",
+     "probability": 0.81414794921875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 28.872,
+     "end": 29.052,
+     "text": "तो",
+     "probability": 0.9978841145833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 29.052,
+     "end": 29.152,
+     "text": "लोग",
+     "probability": 0.99765625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 29.152,
+     "end": 29.412,
+     "text": "भिंडी",
+     "probability": 0.9977678571428571,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 29.412,
+     "end": 29.752,
+     "text": "खाना",
+     "probability": 0.99921875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 29.752,
+     "end": 29.892,
+     "text": "शुरू",
+     "probability": 0.9934430803571429,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 29.892,
+     "end": 30.032,
+     "text": "कर",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 30.032,
+     "end": 30.292,
+     "text": "देंगे",
+     "probability": 0.9903738839285714,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 30.452,
+   "end": 34.452,
+   "text": "नहीं सर एआई टेक्नोलॉजी इस तरफ सोचिए न सर कुछ",
+   "words": [
+    {
+     "start": 30.452,
+     "end": 31.112000000000002,
+     "text": "नहीं",
+     "probability": 0.878857421875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 31.112000000000002,
+     "end": 31.272000000000002,
+     "text": "सर",
+     "probability": 0.99365234375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 31.272000000000002,
+     "end": 31.992,
+     "text": "एआई",
+     "probability": 0.9903157552083334,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 31.992,
+     "end": 32.812000000000005,
+     "text": "टेक्नोलॉजी",
+     "probability": 0.9821965144230769,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 32.812000000000005,
+     "end": 33.292,
+     "text": "इस",
+     "probability": 0.9793294270833334,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 33.292,
+     "end": 33.572,
+     "text": "तरफ",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 33.572,
+     "end": 33.892,
+     "text": "सोचिए",
+     "probability": 0.9592633928571429,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 33.892,
+     "end": 33.892,
+     "text": "न",
+     "probability": 0.997802734375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 33.892,
+     "end": 34.152,
+     "text": "सर",
+     "probability": 0.974365234375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 34.152,
+     "end": 34.452,
+     "text": "कुछ",
+     "probability": 0.9998046875,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 34.4319375,
+   "end": 35.7119375,
+   "text": "एआई रिलेटेड कुछ करना",
+   "words": [
+    {
+     "start": 34.4319375,
+     "end": 34.8919375,
+     "text": "एआई",
+     "probability": 0.7742411295572916,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 34.8919375,
+     "end": 35.2519375,
+     "text": "रिलेटेड",
+     "probability": 0.9849609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 35.2519375,
+     "end": 35.471937499999996,
+     "text": "कुछ",
+     "probability": 0.99892578125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 35.471937499999996,
+     "end": 35.7119375,
+     "text": "करना",
+     "probability": 0.9979248046875,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 35.653,
+   "end": 36.092999999999996,
+   "text": "हाँ",
+   "words": [
+    {
+     "start": 35.653,
+     "end": 36.092999999999996,
+     "text": "हाँ",
+     "probability": 0.48293113708496094,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 35.7119375,
+   "end": 35.91193749999999,
+   "text": "पड़ेगा",
+   "words": [
+    {
+     "start": 35.7119375,
+     "end": 35.91193749999999,
+     "text": "पड़ेगा",
+     "probability": 0.981689453125,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 36.092999999999996,
+   "end": 36.193,
+   "text": "सर",
+   "words": [
+    {
+     "start": 36.092999999999996,
+     "end": 36.193,
+     "text": "सर",
+     "probability": 0.853515625,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 37.393,
+   "end": 40.813,
+   "text": "तो एआई के जितने डेटा सेंटर बनेंगे इंडिया में अमेरिका बनाएगा",
+   "words": [
+    {
+     "start": 37.393,
+     "end": 37.753,
+     "text": "तो",
+     "probability": 0.97802734375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 37.753,
+     "end": 38.053,
+     "text": "एआई",
+     "probability": 0.9408365885416666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 38.053,
+     "end": 38.273,
+     "text": "के",
+     "probability": 0.951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 38.273,
+     "end": 38.533,
+     "text": "जितने",
+     "probability": 0.9921061197916666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 38.533,
+     "end": 38.993,
+     "text": "डेटा",
+     "probability": 0.9840494791666666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 38.993,
+     "end": 39.133,
+     "text": "सेंटर",
+     "probability": 0.9867350260416666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.133,
+     "end": 39.513,
+     "text": "बनेंगे",
+     "probability": 0.97894287109375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.513,
+     "end": 39.773,
+     "text": "इंडिया",
+     "probability": 0.99798583984375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.773,
+     "end": 39.953,
+     "text": "में",
+     "probability": 0.9959309895833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.953,
+     "end": 40.433,
+     "text": "अमेरिका",
+     "probability": 0.9884033203125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 40.433,
+     "end": 40.813,
+     "text": "बनाएगा",
+     "probability": 0.986328125,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 40.793,
+   "end": 41.553,
+   "text": "हाँ",
+   "words": [
+    {
+     "start": 40.793,
+     "end": 41.553,
+     "text": "हाँ",
+     "probability": 0.775390625,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 42.593,
+   "end": 44.453,
+   "text": "उसमें पोचा हमारी कंपनी मारेगी",
+   "words": [
+    {
+     "start": 42.593,
+     "end": 43.193000000000005,
+     "text": "उसमें",
+     "probability": 0.8063151041666666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 43.193000000000005,
+     "end": 43.453,
+     "text": "पोचा",
+     "probability": 0.9791666666666666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 43.453,
+     "end": 43.713,
+     "text": "हमारी",
+     "probability": 0.99599609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 43.713,
+     "end": 44.073,
+     "text": "कंपनी",
+     "probability": 0.9969889322916666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 44.073,
+     "end": 44.453,
+     "text": "मारेगी",
+     "probability": 0.9964425223214286,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  }
+ ],
+ "turns": [
+  {
+   "speaker": "SPEAKER_02",
+   "start": 0.013,
+   "end": 4.173
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 4.353,
+   "end": 6.312
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 7.293,
+   "end": 10.012
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 10.192,
+   "end": 10.573
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 11.532,
+   "end": 13.213
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 13.573,
+   "end": 13.913
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 14.213,
+   "end": 16.133
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 17.633,
+   "end": 20.852
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 17.753,
+   "end": 18.392
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 22.133,
+   "end": 24.953
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 26.392,
+   "end": 30.453
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 30.652,
+   "end": 34.493
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 34.632,
+   "end": 35.993
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 35.853,
+   "end": 36.353
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 37.593,
+   "end": 40.912
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 39.993,
+   "end": 40.373
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 40.993,
+   "end": 41.373
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 42.793,
+   "end": 44.532
+  }
+ ],
+ "language": "hi",
+ "duration": 45.186,
+ "timings": {
+  "load": 0.186,
+  "diarization": 7.032,
+  "language_id": 1.591,
+  "asr": 26.824,
+  "total": 35.643,
+  "rtf": 0.7888
+ },
+ "language_probability": 0.9992
+}

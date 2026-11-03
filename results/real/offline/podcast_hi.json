@@ -1,0 +1,1971 @@
+{
+ "utterances": [
+  {
+   "speaker": "SPEAKER_02",
+   "start": 0.0,
+   "end": 4.5,
+   "text": "और मैं उसमें देख रहा हूँ कि आपने पीएचडी भी की है क्या सब्जेक्ट था आपका",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.4,
+     "text": "और",
+     "probability": 0.9798177083333334,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 0.4,
+     "end": 0.52,
+     "text": "मैं",
+     "probability": 0.9869791666666666,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 0.52,
+     "end": 0.84,
+     "text": "उसमें",
+     "probability": 0.8519694010416666,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 0.84,
+     "end": 1.02,
+     "text": "देख",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 1.02,
+     "end": 1.16,
+     "text": "रहा",
+     "probability": 0.998291015625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 1.16,
+     "end": 1.2,
+     "text": "हूँ",
+     "probability": 0.98544921875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 1.2,
+     "end": 1.38,
+     "text": "कि",
+     "probability": 0.969482421875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 1.38,
+     "end": 2.0,
+     "text": "आपने",
+     "probability": 0.9932454427083334,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 2.0,
+     "end": 2.56,
+     "text": "पीएचडी",
+     "probability": 0.971630859375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 2.56,
+     "end": 2.78,
+     "text": "भी",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 2.78,
+     "end": 2.98,
+     "text": "की",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 2.98,
+     "end": 3.28,
+     "text": "है",
+     "probability": 0.999267578125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 3.28,
+     "end": 3.84,
+     "text": "क्या",
+     "probability": 0.99462890625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 3.84,
+     "end": 4.1,
+     "text": "सब्जेक्ट",
+     "probability": 0.9970259232954546,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 4.1,
+     "end": 4.24,
+     "text": "था",
+     "probability": 0.9998372395833334,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 4.24,
+     "end": 4.5,
+     "text": "आपका",
+     "probability": 0.9995930989583334,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 4.593,
+   "end": 6.893,
+   "text": "सर स्टैंफर्ड यूनिवर्सिटी ऑफ बलिया से",
+   "words": [
+    {
+     "start": 4.593,
+     "end": 5.033,
+     "text": "सर",
+     "probability": 0.898681640625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 5.033,
+     "end": 5.573,
+     "text": "स्टैंफर्ड",
+     "probability": 0.8890787760416666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 5.573,
+     "end": 6.093,
+     "text": "यूनिवर्सिटी",
+     "probability": 0.99306640625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 6.093,
+     "end": 6.193,
+     "text": "ऑफ",
+     "probability": 0.9732666015625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 6.193,
+     "end": 6.6129999999999995,
+     "text": "बलिया",
+     "probability": 0.98388671875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 6.6129999999999995,
+     "end": 6.893,
+     "text": "से",
+     "probability": 0.948486328125,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 6.753,
+   "end": 6.813,
+   "text": "हम",
+   "words": [
+    {
+     "start": 6.753,
+     "end": 6.813,
+     "text": "हम",
+     "probability": 0.3892822265625,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 6.893,
+   "end": 10.633,
+   "text": "मैंने पीएचडी की है जिसमें मैंने दो पेपर पब्लिश किए हैं नेचर मैगजीन में",
+   "words": [
+    {
+     "start": 6.893,
+     "end": 7.353,
+     "text": "मैंने",
+     "probability": 0.872216796875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 7.353,
+     "end": 7.813000000000001,
+     "text": "पीएचडी",
+     "probability": 0.98828125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 7.813000000000001,
+     "end": 7.952999999999999,
+     "text": "की",
+     "probability": 0.49452972412109375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 7.952999999999999,
+     "end": 8.093,
+     "text": "है",
+     "probability": 0.993408203125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 8.093,
+     "end": 8.373,
+     "text": "जिसमें",
+     "probability": 0.9854213169642857,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 8.373,
+     "end": 8.633,
+     "text": "मैंने",
+     "probability": 0.86162109375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 8.633,
+     "end": 8.733,
+     "text": "दो",
+     "probability": 0.99658203125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 8.733,
+     "end": 9.093,
+     "text": "पेपर",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 9.093,
+     "end": 9.353,
+     "text": "पब्लिश",
+     "probability": 0.9914822048611112,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 9.353,
+     "end": 9.613,
+     "text": "किए",
+     "probability": 0.935302734375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 9.613,
+     "end": 9.853,
+     "text": "हैं",
+     "probability": 0.8621419270833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 9.853,
+     "end": 10.013,
+     "text": "नेचर",
+     "probability": 0.9967447916666666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 10.013,
+     "end": 10.433,
+     "text": "मैगजीन",
+     "probability": 0.96563720703125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 10.433,
+     "end": 10.633,
+     "text": "में",
+     "probability": 0.99462890625,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 10.693,
+   "end": 11.853,
+   "text": "तो किस बारे में थे पेपर",
+   "words": [
+    {
+     "start": 10.693,
+     "end": 11.133,
+     "text": "तो",
+     "probability": 0.9949544270833334,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 11.133,
+     "end": 11.213,
+     "text": "किस",
+     "probability": 0.9939778645833334,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 11.213,
+     "end": 11.472999999999999,
+     "text": "बारे",
+     "probability": 0.999609375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 11.472999999999999,
+     "end": 11.552999999999999,
+     "text": "में",
+     "probability": 0.9947916666666666,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 11.552999999999999,
+     "end": 11.673,
+     "text": "थे",
+     "probability": 0.9943033854166666,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 11.673,
+     "end": 11.853,
+     "text": "पेपर",
+     "probability": 0.9923502604166666,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 12.233,
+   "end": 14.853000000000002,
+   "text": "सर एट्स अबाउड बिहेवरील चेंजिज आफटर अल्कोहलिज्म",
+   "words": [
+    {
+     "start": 12.233,
+     "end": 12.633000000000001,
+     "text": "सर",
+     "probability": 0.94580078125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 12.633000000000001,
+     "end": 12.893,
+     "text": "एट्स",
+     "probability": 0.85333251953125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 12.893,
+     "end": 13.153,
+     "text": "अबाउड",
+     "probability": 0.8568250868055556,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 13.153,
+     "end": 13.653,
+     "text": "बिहेवरील",
+     "probability": 0.8878173828125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 13.653,
+     "end": 13.933,
+     "text": "चेंजिज",
+     "probability": 0.9613172743055556,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 13.933,
+     "end": 14.293000000000001,
+     "text": "आफटर",
+     "probability": 0.8828473772321429,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 14.293000000000001,
+     "end": 14.853000000000002,
+     "text": "अल्कोहलिज्म",
+     "probability": 0.9063814603365384,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 15.312,
+   "end": 15.812,
+   "text": "ओह",
+   "words": [
+    {
+     "start": 15.312,
+     "end": 15.812,
+     "text": "ओह",
+     "probability": 0.8079427083333334,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 15.773,
+   "end": 22.393,
+   "text": "सर इस पेपर में मैंने यह प्रूव किया था कि अगर आप साठ साठ एम एल के तीन पैग पीने के बजाय तीस तीस एम एल के छः पैग पिएं",
+   "words": [
+    {
+     "start": 15.773,
+     "end": 16.093,
+     "text": "सर",
+     "probability": 0.986572265625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 16.093,
+     "end": 16.333,
+     "text": "इस",
+     "probability": 0.98779296875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 16.333,
+     "end": 16.533,
+     "text": "पेपर",
+     "probability": 0.9977213541666666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 16.533,
+     "end": 16.713,
+     "text": "में",
+     "probability": 0.9806315104166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 16.713,
+     "end": 16.913,
+     "text": "मैंने",
+     "probability": 0.89150390625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 16.913,
+     "end": 17.073,
+     "text": "यह",
+     "probability": 0.8347981770833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 17.073,
+     "end": 17.153,
+     "text": "प्रूव",
+     "probability": 0.9176025390625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 17.153,
+     "end": 17.553,
+     "text": "किया",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 17.553,
+     "end": 17.692999999999998,
+     "text": "था",
+     "probability": 0.9954427083333334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 17.692999999999998,
+     "end": 17.753,
+     "text": "कि",
+     "probability": 0.955810546875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 17.753,
+     "end": 18.012999999999998,
+     "text": "अगर",
+     "probability": 0.99775390625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 18.012999999999998,
+     "end": 18.133,
+     "text": "आप",
+     "probability": 0.999267578125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 18.133,
+     "end": 18.533,
+     "text": "साठ",
+     "probability": 0.875244140625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 18.533,
+     "end": 18.773,
+     "text": "साठ",
+     "probability": 0.9342041015625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 18.773,
+     "end": 18.893,
+     "text": "एम",
+     "probability": 0.9861653645833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 18.893,
+     "end": 19.033,
+     "text": "एल",
+     "probability": 0.7205810546875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 19.033,
+     "end": 19.153,
+     "text": "के",
+     "probability": 0.9970703125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 19.153,
+     "end": 19.512999999999998,
+     "text": "तीन",
+     "probability": 0.9976806640625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 19.512999999999998,
+     "end": 19.733,
+     "text": "पैग",
+     "probability": 0.9509765625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 19.733,
+     "end": 20.093,
+     "text": "पीने",
+     "probability": 0.99912109375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 20.093,
+     "end": 20.213,
+     "text": "के",
+     "probability": 0.93896484375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 20.213,
+     "end": 20.573,
+     "text": "बजाय",
+     "probability": 0.9899088541666666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 20.573,
+     "end": 20.933,
+     "text": "तीस",
+     "probability": 0.9222412109375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 20.933,
+     "end": 21.073,
+     "text": "तीस",
+     "probability": 0.967529296875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 21.073,
+     "end": 21.173000000000002,
+     "text": "एम",
+     "probability": 0.98291015625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 21.173000000000002,
+     "end": 21.253,
+     "text": "एल",
+     "probability": 0.9959309895833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 21.253,
+     "end": 21.433,
+     "text": "के",
+     "probability": 0.98974609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 21.433,
+     "end": 21.653,
+     "text": "छः",
+     "probability": 0.8719482421875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 21.653,
+     "end": 21.833,
+     "text": "पैग",
+     "probability": 0.9578125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 21.833,
+     "end": 22.393,
+     "text": "पिएं",
+     "probability": 0.8475748697916666,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 22.213,
+   "end": 22.893,
+   "text": "हाँ",
+   "words": [
+    {
+     "start": 22.213,
+     "end": 22.893,
+     "text": "हाँ",
+     "probability": 0.5303421020507812,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 22.393,
+   "end": 23.673000000000002,
+   "text": "तो ज्यादा नशा होगा",
+   "words": [
+    {
+     "start": 22.393,
+     "end": 22.833,
+     "text": "तो",
+     "probability": 0.9734700520833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 22.833,
+     "end": 23.113,
+     "text": "ज्यादा",
+     "probability": 0.9974365234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 23.113,
+     "end": 23.453,
+     "text": "नशा",
+     "probability": 0.99892578125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 23.453,
+     "end": 23.673000000000002,
+     "text": "होगा",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 23.873,
+   "end": 24.413,
+   "text": "अश्य",
+   "words": [
+    {
+     "start": 23.873,
+     "end": 24.413,
+     "text": "अश्य",
+     "probability": 0.5047658284505209,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 24.433,
+   "end": 29.213,
+   "text": "और इस बात को मैंने प्रूफ करने के लिए एक लैब में दो ग्रुप में लोगो को बांटा",
+   "words": [
+    {
+     "start": 24.433,
+     "end": 24.813,
+     "text": "और",
+     "probability": 0.9485677083333334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 24.813,
+     "end": 24.913,
+     "text": "इस",
+     "probability": 0.9729817708333334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 24.913,
+     "end": 25.093,
+     "text": "बात",
+     "probability": 0.995849609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 25.093,
+     "end": 25.173,
+     "text": "को",
+     "probability": 0.98046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 25.173,
+     "end": 25.413,
+     "text": "मैंने",
+     "probability": 0.95283203125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 25.413,
+     "end": 25.653,
+     "text": "प्रूफ",
+     "probability": 0.924072265625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 25.653,
+     "end": 26.133,
+     "text": "करने",
+     "probability": 0.984375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 26.133,
+     "end": 26.133,
+     "text": "के",
+     "probability": 0.992919921875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 26.133,
+     "end": 26.253,
+     "text": "लिए",
+     "probability": 0.9904296875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 26.253,
+     "end": 26.533,
+     "text": "एक",
+     "probability": 0.9903971354166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 26.533,
+     "end": 26.873,
+     "text": "लैब",
+     "probability": 0.98154296875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 26.873,
+     "end": 27.853,
+     "text": "में",
+     "probability": 0.9832356770833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 27.853,
+     "end": 28.053,
+     "text": "दो",
+     "probability": 0.9969075520833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 28.053,
+     "end": 28.293,
+     "text": "ग्रुप",
+     "probability": 0.99810791015625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 28.293,
+     "end": 28.453,
+     "text": "में",
+     "probability": 0.9894205729166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 28.453,
+     "end": 28.733,
+     "text": "लोगो",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 28.733,
+     "end": 28.733,
+     "text": "को",
+     "probability": 0.7166748046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 28.733,
+     "end": 29.213,
+     "text": "बांटा",
+     "probability": 0.9659598214285714,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 29.132,
+   "end": 29.452,
+   "text": "हुं",
+   "words": [
+    {
+     "start": 29.132,
+     "end": 29.452,
+     "text": "हुं",
+     "probability": 0.47589111328125,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 29.213,
+   "end": 33.113,
+   "text": "एक ग्रुप में चार लोगो को बैठाया एक ग्रुप में मैं खुद दारू लेकर बैठाया",
+   "words": [
+    {
+     "start": 29.213,
+     "end": 29.833,
+     "text": "एक",
+     "probability": 0.9521484375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 29.833,
+     "end": 30.053,
+     "text": "ग्रुप",
+     "probability": 0.9967041015625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 30.053,
+     "end": 30.333,
+     "text": "में",
+     "probability": 0.990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 30.333,
+     "end": 30.433,
+     "text": "चार",
+     "probability": 0.996826171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 30.433,
+     "end": 30.692999999999998,
+     "text": "लोगो",
+     "probability": 0.9972330729166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 30.692999999999998,
+     "end": 30.692999999999998,
+     "text": "को",
+     "probability": 0.978759765625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 30.692999999999998,
+     "end": 31.113,
+     "text": "बैठाया",
+     "probability": 0.99688720703125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 31.113,
+     "end": 31.553,
+     "text": "एक",
+     "probability": 0.9181315104166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 31.553,
+     "end": 31.813,
+     "text": "ग्रुप",
+     "probability": 0.99884033203125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 31.813,
+     "end": 32.133,
+     "text": "में",
+     "probability": 0.9939778645833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 32.133,
+     "end": 32.133,
+     "text": "मैं",
+     "probability": 0.9376627604166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 32.133,
+     "end": 32.353,
+     "text": "खुद",
+     "probability": 0.9960123697916666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 32.353,
+     "end": 32.493,
+     "text": "दारू",
+     "probability": 0.9839680989583334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 32.493,
+     "end": 32.713,
+     "text": "लेकर",
+     "probability": 0.9748046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 32.713,
+     "end": 33.113,
+     "text": "बैठाया",
+     "probability": 0.99713134765625,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 33.132,
+   "end": 33.711999999999996,
+   "text": "अकेले",
+   "words": [
+    {
+     "start": 33.132,
+     "end": 33.711999999999996,
+     "text": "अकेले",
+     "probability": 0.9920247395833334,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 34.8319375,
+   "end": 38.211937500000005,
+   "text": "उधर मैंने सरसठ एम एल के पैक पिलाने शुरू किए",
+   "words": [
+    {
+     "start": 34.8319375,
+     "end": 35.351937500000005,
+     "text": "उधर",
+     "probability": 0.9580078125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 35.351937500000005,
+     "end": 35.711937500000005,
+     "text": "मैंने",
+     "probability": 0.92998046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 35.711937500000005,
+     "end": 35.9919375,
+     "text": "सरसठ",
+     "probability": 0.814599609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 36.071937500000004,
+     "end": 36.1319375,
+     "text": "एम",
+     "probability": 0.92724609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 36.1319375,
+     "end": 36.251937500000004,
+     "text": "एल",
+     "probability": 0.7445882161458334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 36.251937500000004,
+     "end": 36.8719375,
+     "text": "के",
+     "probability": 0.9755859375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 36.8719375,
+     "end": 37.071937500000004,
+     "text": "पैक",
+     "probability": 0.9630126953125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 37.071937500000004,
+     "end": 37.5919375,
+     "text": "पिलाने",
+     "probability": 0.9921177455357143,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 37.5919375,
+     "end": 37.931937500000004,
+     "text": "शुरू",
+     "probability": 0.9898856026785714,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 37.931937500000004,
+     "end": 38.211937500000005,
+     "text": "किए",
+     "probability": 0.9271240234375,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 37.9719375,
+   "end": 38.7319375,
+   "text": "हाँ",
+   "words": [
+    {
+     "start": 37.9719375,
+     "end": 38.7319375,
+     "text": "हाँ",
+     "probability": 0.5444068908691406,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 38.211937500000005,
+   "end": 40.3719375,
+   "text": "और इधर मैं तीस एम एल के पैक पिय रहा था",
+   "words": [
+    {
+     "start": 38.211937500000005,
+     "end": 38.5519375,
+     "text": "और",
+     "probability": 0.9275716145833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 38.5519375,
+     "end": 38.6519375,
+     "text": "इधर",
+     "probability": 0.9693359375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 38.6519375,
+     "end": 38.8319375,
+     "text": "मैं",
+     "probability": 0.9903971354166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 38.8319375,
+     "end": 39.1319375,
+     "text": "तीस",
+     "probability": 0.951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.1319375,
+     "end": 39.2319375,
+     "text": "एम",
+     "probability": 0.8445638020833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.2319375,
+     "end": 39.4719375,
+     "text": "एल",
+     "probability": 0.9557291666666666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.4719375,
+     "end": 39.571937500000004,
+     "text": "के",
+     "probability": 0.985107421875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.571937500000004,
+     "end": 39.8719375,
+     "text": "पैक",
+     "probability": 0.9964599609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.8719375,
+     "end": 40.0919375,
+     "text": "पिय",
+     "probability": 0.79345703125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 40.0919375,
+     "end": 40.2919375,
+     "text": "रहा",
+     "probability": 0.984375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 40.2919375,
+     "end": 40.3719375,
+     "text": "था",
+     "probability": 0.9982096354166666,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 40.5719375,
+   "end": 42.4119375,
+   "text": "और कितने पैक भी होंगे लगभग आपने",
+   "words": [
+    {
+     "start": 40.5719375,
+     "end": 41.0719375,
+     "text": "और",
+     "probability": 0.7322591145833334,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 41.0719375,
+     "end": 41.331937499999995,
+     "text": "कितने",
+     "probability": 0.99052734375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 41.331937499999995,
+     "end": 41.5319375,
+     "text": "पैक",
+     "probability": 0.94287109375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 41.5319375,
+     "end": 41.7719375,
+     "text": "भी",
+     "probability": 0.9879557291666666,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 41.7719375,
+     "end": 41.9319375,
+     "text": "होंगे",
+     "probability": 0.9200846354166666,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 41.9319375,
+     "end": 42.2119375,
+     "text": "लगभग",
+     "probability": 0.99359130859375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 42.2119375,
+     "end": 42.4119375,
+     "text": "आपने",
+     "probability": 0.9991048177083334,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 42.412,
+   "end": 44.292,
+   "text": "उनको तीन तीन मैंने छः पी लिए थे",
+   "words": [
+    {
+     "start": 42.412,
+     "end": 42.912,
+     "text": "उनको",
+     "probability": 0.98671875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 42.912,
+     "end": 43.112,
+     "text": "तीन",
+     "probability": 0.99365234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 43.112,
+     "end": 43.272,
+     "text": "तीन",
+     "probability": 0.9696044921875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 43.272,
+     "end": 43.552,
+     "text": "मैंने",
+     "probability": 0.92041015625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 43.552,
+     "end": 43.732,
+     "text": "छः",
+     "probability": 0.8341064453125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 43.732,
+     "end": 43.852,
+     "text": "पी",
+     "probability": 0.9737955729166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 43.852,
+     "end": 44.092,
+     "text": "लिए",
+     "probability": 0.97529296875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 44.092,
+     "end": 44.292,
+     "text": "थे",
+     "probability": 0.9951171875,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 44.153,
+   "end": 44.853,
+   "text": "क्यो",
+   "words": [
+    {
+     "start": 44.153,
+     "end": 44.853,
+     "text": "क्यो",
+     "probability": 0.7515869140625,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 44.292,
+   "end": 48.272,
+   "text": "आप यकीन नहीं मानेंगे कि जिन लोगों ने साठ साठ एम एल के पैक पिए",
+   "words": [
+    {
+     "start": 44.292,
+     "end": 44.672,
+     "text": "आप",
+     "probability": 0.998291015625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 44.672,
+     "end": 44.992,
+     "text": "यकीन",
+     "probability": 0.9470703125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 44.992,
+     "end": 45.232,
+     "text": "नहीं",
+     "probability": 0.99130859375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 45.232,
+     "end": 45.732,
+     "text": "मानेंगे",
+     "probability": 0.97515869140625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 45.732,
+     "end": 45.992,
+     "text": "कि",
+     "probability": 0.944580078125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 45.992,
+     "end": 46.251999999999995,
+     "text": "जिन",
+     "probability": 0.995849609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 46.251999999999995,
+     "end": 46.592,
+     "text": "लोगों",
+     "probability": 0.9695870535714286,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 46.592,
+     "end": 46.692,
+     "text": "ने",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 46.692,
+     "end": 47.092,
+     "text": "साठ",
+     "probability": 0.940185546875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 47.092,
+     "end": 47.352,
+     "text": "साठ",
+     "probability": 0.9840087890625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 47.352,
+     "end": 47.452,
+     "text": "एम",
+     "probability": 0.722412109375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 47.452,
+     "end": 47.532,
+     "text": "एल",
+     "probability": 0.6818033854166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 47.532,
+     "end": 47.632,
+     "text": "के",
+     "probability": 0.98388671875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 47.632,
+     "end": 47.852,
+     "text": "पैक",
+     "probability": 0.993408203125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 47.852,
+     "end": 48.272,
+     "text": "पिए",
+     "probability": 0.94267578125,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 48.132,
+   "end": 48.512,
+   "text": "हम",
+   "words": [
+    {
+     "start": 48.132,
+     "end": 48.512,
+     "text": "हम",
+     "probability": 0.711669921875,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 48.8319375,
+   "end": 50.431937500000004,
+   "text": "उनको पकड़ के मैंने पीट दिया",
+   "words": [
+    {
+     "start": 48.8319375,
+     "end": 49.351937500000005,
+     "text": "उनको",
+     "probability": 0.99365234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 49.351937500000005,
+     "end": 49.711937500000005,
+     "text": "पकड़",
+     "probability": 0.9976981026785714,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 49.711937500000005,
+     "end": 49.711937500000005,
+     "text": "के",
+     "probability": 0.807373046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 49.711937500000005,
+     "end": 49.9119375,
+     "text": "मैंने",
+     "probability": 0.9248046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 49.9119375,
+     "end": 50.171937500000006,
+     "text": "पीट",
+     "probability": 0.99921875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 50.171937500000006,
+     "end": 50.431937500000004,
+     "text": "दिया",
+     "probability": 0.999609375,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 50.4529375,
+   "end": 51.2329375,
+   "text": "पीट दिया",
+   "words": [
+    {
+     "start": 50.4529375,
+     "end": 50.9129375,
+     "text": "पीट",
+     "probability": 0.9615234375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 50.9129375,
+     "end": 51.2329375,
+     "text": "दिया",
+     "probability": 0.9986328125,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 51.0719375,
+   "end": 51.1319375,
+   "text": "जी",
+   "words": [
+    {
+     "start": 51.0719375,
+     "end": 51.1319375,
+     "text": "जी",
+     "probability": 0.7358805338541666,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 51.7119375,
+   "end": 52.9319375,
+   "text": "किस वजह से पीट दिया",
+   "words": [
+    {
+     "start": 51.7119375,
+     "end": 52.191937499999995,
+     "text": "किस",
+     "probability": 0.9951171875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 52.191937499999995,
+     "end": 52.3519375,
+     "text": "वजह",
+     "probability": 0.99375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 52.3519375,
+     "end": 52.511937499999995,
+     "text": "से",
+     "probability": 0.9599609375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 52.511937499999995,
+     "end": 52.6719375,
+     "text": "पीट",
+     "probability": 0.9953125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 52.6719375,
+     "end": 52.9319375,
+     "text": "दिया",
+     "probability": 0.89619140625,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 52.772,
+   "end": 56.052,
+   "text": "मैंने उनका एक पैक पी लिया था तो झगड़ा हो गया तो मैंने उनको पीट दिया",
+   "words": [
+    {
+     "start": 52.772,
+     "end": 53.372,
+     "text": "मैंने",
+     "probability": 0.94462890625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 53.372,
+     "end": 53.652,
+     "text": "उनका",
+     "probability": 0.99013671875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 53.652,
+     "end": 53.711999999999996,
+     "text": "एक",
+     "probability": 0.98095703125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 53.711999999999996,
+     "end": 53.832,
+     "text": "पैक",
+     "probability": 0.9490966796875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 53.832,
+     "end": 54.052,
+     "text": "पी",
+     "probability": 0.9773763020833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 54.052,
+     "end": 54.332,
+     "text": "लिया",
+     "probability": 0.99873046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 54.332,
+     "end": 54.452,
+     "text": "था",
+     "probability": 0.99609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 54.452,
+     "end": 54.532,
+     "text": "तो",
+     "probability": 0.9090169270833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 54.532,
+     "end": 54.832,
+     "text": "झगड़ा",
+     "probability": 0.9845377604166666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 54.832,
+     "end": 54.891999999999996,
+     "text": "हो",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 54.891999999999996,
+     "end": 54.972,
+     "text": "गया",
+     "probability": 0.9989013671875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 54.972,
+     "end": 55.071999999999996,
+     "text": "तो",
+     "probability": 0.93896484375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 55.071999999999996,
+     "end": 55.332,
+     "text": "मैंने",
+     "probability": 0.990625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 55.332,
+     "end": 55.532,
+     "text": "उनको",
+     "probability": 0.9966796875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 55.532,
+     "end": 55.792,
+     "text": "पीट",
+     "probability": 0.99873046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 55.792,
+     "end": 56.052,
+     "text": "दिया",
+     "probability": 0.99921875,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 56.1729375,
+   "end": 57.4729375,
+   "text": "इसे फिर क्या अप्रूफ हुआ",
+   "words": [
+    {
+     "start": 56.1729375,
+     "end": 56.632937500000004,
+     "text": "इसे",
+     "probability": 0.9219970703125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 56.632937500000004,
+     "end": 56.812937500000004,
+     "text": "फिर",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 56.812937500000004,
+     "end": 57.132937500000004,
+     "text": "क्या",
+     "probability": 0.998779296875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 57.132937500000004,
+     "end": 57.1729375,
+     "text": "अप्रूफ",
+     "probability": 0.93818359375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 57.1729375,
+     "end": 57.4729375,
+     "text": "हुआ",
+     "probability": 0.99912109375,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 57.6119375,
+   "end": 60.391937500000004,
+   "text": "नी प्रूव तो कुछ नहीं हुआ लेकिन एक झगडा हो गया",
+   "words": [
+    {
+     "start": 57.6119375,
+     "end": 57.95193750000001,
+     "text": "नी",
+     "probability": 0.6251220703125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 57.95193750000001,
+     "end": 58.251937500000004,
+     "text": "प्रूव",
+     "probability": 0.9530029296875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 58.251937500000004,
+     "end": 58.4119375,
+     "text": "तो",
+     "probability": 0.9934895833333334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 58.4119375,
+     "end": 58.63193750000001,
+     "text": "कुछ",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 58.63193750000001,
+     "end": 58.7719375,
+     "text": "नहीं",
+     "probability": 0.9359375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 58.7719375,
+     "end": 58.931937500000004,
+     "text": "हुआ",
+     "probability": 0.9984375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 58.931937500000004,
+     "end": 59.13193750000001,
+     "text": "लेकिन",
+     "probability": 0.9969889322916666,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 59.13193750000001,
+     "end": 59.8319375,
+     "text": "एक",
+     "probability": 0.9905598958333334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 59.8319375,
+     "end": 60.0519375,
+     "text": "झगडा",
+     "probability": 0.9028669084821429,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 60.0519375,
+     "end": 60.27193750000001,
+     "text": "हो",
+     "probability": 0.995361328125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 60.27193750000001,
+     "end": 60.391937500000004,
+     "text": "गया",
+     "probability": 0.9971923828125,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  }
+ ],
+ "turns": [
+  {
+   "speaker": "SPEAKER_02",
+   "start": 0.072,
+   "end": 3.293
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 3.593,
+   "end": 4.553
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 4.793,
+   "end": 10.692
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 6.953,
+   "end": 7.393
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 10.893,
+   "end": 12.093
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 12.433,
+   "end": 14.973
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 15.512,
+   "end": 15.873
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 15.973,
+   "end": 22.232
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 22.413,
+   "end": 22.732
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 22.712,
+   "end": 23.652
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 24.073,
+   "end": 24.552
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 24.633,
+   "end": 27.192
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 27.672,
+   "end": 29.212
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 29.332,
+   "end": 29.672
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 29.652,
+   "end": 33.112
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 33.332,
+   "end": 33.812
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 33.853,
+   "end": 34.293
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 35.032,
+   "end": 36.472
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 36.892,
+   "end": 40.453
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 38.172,
+   "end": 38.552
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 40.772,
+   "end": 42.472
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 42.612,
+   "end": 48.272
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 44.353,
+   "end": 44.692
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 48.332,
+   "end": 48.692
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 49.032,
+   "end": 50.513
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 50.653,
+   "end": 51.252
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 51.272,
+   "end": 51.692
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 51.912,
+   "end": 52.972
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 52.972,
+   "end": 56.153
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 56.373,
+   "end": 57.513
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 57.812,
+   "end": 59.373
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 59.733,
+   "end": 60.412
+  }
+ ],
+ "language": "hi",
+ "duration": 60.709,
+ "timings": {
+  "load": 0.215,
+  "diarization": 10.387,
+  "language_id": 0.894,
+  "asr": 44.303,
+  "total": 55.807,
+  "rtf": 0.9193
+ },
+ "language_probability": 0.9888
+}

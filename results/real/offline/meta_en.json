@@ -1,0 +1,1120 @@
+{
+ "utterances": [
+  {
+   "speaker": "SPEAKER_01",
+   "start": 0.0,
+   "end": 4.94,
+   "text": "Staff, engineer, and engineering manager have quite a bit of overlap in terms",
+   "words": [
+    {
+     "start": 0.0,
+     "end": 0.4,
+     "text": "Staff,",
+     "probability": 0.78369140625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 0.44,
+     "end": 0.66,
+     "text": "engineer,",
+     "probability": 0.669921875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 0.98,
+     "end": 1.44,
+     "text": "and",
+     "probability": 0.99609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 1.44,
+     "end": 1.8,
+     "text": "engineering",
+     "probability": 0.99365234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 1.8,
+     "end": 2.22,
+     "text": "manager",
+     "probability": 0.9853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 2.22,
+     "end": 2.76,
+     "text": "have",
+     "probability": 0.95654296875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 2.76,
+     "end": 3.2,
+     "text": "quite",
+     "probability": 0.9931640625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 3.2,
+     "end": 3.34,
+     "text": "a",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 3.34,
+     "end": 3.54,
+     "text": "bit",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 3.54,
+     "end": 3.7,
+     "text": "of",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 3.7,
+     "end": 4.32,
+     "text": "overlap",
+     "probability": 0.9931640625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 4.32,
+     "end": 4.64,
+     "text": "in",
+     "probability": 0.982421875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 4.64,
+     "end": 4.94,
+     "text": "terms",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 4.873,
+   "end": 5.033,
+   "text": "Thumbs",
+   "words": [
+    {
+     "start": 4.873,
+     "end": 5.033,
+     "text": "Thumbs",
+     "probability": 0.5924072265625,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 4.94,
+   "end": 5.12,
+   "text": "of",
+   "words": [
+    {
+     "start": 4.94,
+     "end": 5.12,
+     "text": "of",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 5.033,
+   "end": 5.093,
+   "text": "up.",
+   "words": [
+    {
+     "start": 5.033,
+     "end": 5.093,
+     "text": "up.",
+     "probability": 0.96142578125,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 5.12,
+   "end": 5.4,
+   "text": "behavior.",
+   "words": [
+    {
+     "start": 5.12,
+     "end": 5.4,
+     "text": "behavior.",
+     "probability": 0.3662109375,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 5.833,
+   "end": 11.933,
+   "text": "This is Sajah Rustagi, staff engineer over at Meta and he shares how to grow to the highest levels as software engineer.",
+   "words": [
+    {
+     "start": 5.833,
+     "end": 6.1530000000000005,
+     "text": "This",
+     "probability": 0.849609375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 6.1530000000000005,
+     "end": 6.453,
+     "text": "is",
+     "probability": 0.99609375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 6.453,
+     "end": 6.713,
+     "text": "Sajah",
+     "probability": 0.5281982421875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 6.713,
+     "end": 7.113,
+     "text": "Rustagi,",
+     "probability": 0.621337890625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 7.2330000000000005,
+     "end": 7.6530000000000005,
+     "text": "staff",
+     "probability": 0.67626953125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 7.6530000000000005,
+     "end": 8.053,
+     "text": "engineer",
+     "probability": 0.9931640625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 8.053,
+     "end": 8.333,
+     "text": "over",
+     "probability": 0.94482421875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 8.333,
+     "end": 8.453,
+     "text": "at",
+     "probability": 0.98681640625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 8.453,
+     "end": 8.713000000000001,
+     "text": "Meta",
+     "probability": 0.877685546875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 8.713000000000001,
+     "end": 8.893,
+     "text": "and",
+     "probability": 0.258056640625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 8.893,
+     "end": 9.273,
+     "text": "he",
+     "probability": 0.99169921875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 9.273,
+     "end": 9.653,
+     "text": "shares",
+     "probability": 0.99658203125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 9.653,
+     "end": 9.873000000000001,
+     "text": "how",
+     "probability": 0.98583984375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 9.873000000000001,
+     "end": 9.972999999999999,
+     "text": "to",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 9.972999999999999,
+     "end": 10.133,
+     "text": "grow",
+     "probability": 0.994140625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 10.133,
+     "end": 10.253,
+     "text": "to",
+     "probability": 0.99658203125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 10.253,
+     "end": 10.333,
+     "text": "the",
+     "probability": 0.99755859375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 10.333,
+     "end": 10.553,
+     "text": "highest",
+     "probability": 0.998046875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 10.553,
+     "end": 10.893,
+     "text": "levels",
+     "probability": 0.9892578125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 10.893,
+     "end": 11.353,
+     "text": "as",
+     "probability": 0.97802734375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 11.353,
+     "end": 11.613,
+     "text": "software",
+     "probability": 0.66845703125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 11.613,
+     "end": 11.933,
+     "text": "engineer.",
+     "probability": 0.9921875,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 12.112,
+   "end": 25.252000000000002,
+   "text": "The people that grow up, they care about the problems that they are working on. If you keep working on the same thing and you don't feel passionate about it, over time you stop caring and over time that's where you just stop growing. I think empty backlog is a myth.",
+   "words": [
+    {
+     "start": 12.112,
+     "end": 12.412,
+     "text": "The",
+     "probability": 0.81787109375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 12.412,
+     "end": 12.652000000000001,
+     "text": "people",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 12.652000000000001,
+     "end": 12.832,
+     "text": "that",
+     "probability": 0.96875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 12.832,
+     "end": 13.032,
+     "text": "grow",
+     "probability": 0.98828125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 13.032,
+     "end": 13.232,
+     "text": "up,",
+     "probability": 0.751953125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 13.252,
+     "end": 13.352,
+     "text": "they",
+     "probability": 0.98828125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 13.352,
+     "end": 13.592,
+     "text": "care",
+     "probability": 0.99462890625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 13.592,
+     "end": 13.952,
+     "text": "about",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 13.952,
+     "end": 14.152000000000001,
+     "text": "the",
+     "probability": 0.99658203125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 14.152000000000001,
+     "end": 14.472,
+     "text": "problems",
+     "probability": 0.94189453125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 14.472,
+     "end": 14.652000000000001,
+     "text": "that",
+     "probability": 0.95703125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 14.652000000000001,
+     "end": 14.792,
+     "text": "they",
+     "probability": 0.998046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 14.792,
+     "end": 14.892,
+     "text": "are",
+     "probability": 0.80859375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 14.892,
+     "end": 15.152000000000001,
+     "text": "working",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 15.152000000000001,
+     "end": 15.352,
+     "text": "on.",
+     "probability": 0.9892578125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 15.372,
+     "end": 15.492,
+     "text": "If",
+     "probability": 0.98974609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 15.492,
+     "end": 15.572,
+     "text": "you",
+     "probability": 0.998046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 15.572,
+     "end": 15.772,
+     "text": "keep",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 15.772,
+     "end": 16.052,
+     "text": "working",
+     "probability": 0.99609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 16.052,
+     "end": 16.252,
+     "text": "on",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 16.252,
+     "end": 16.352,
+     "text": "the",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 16.352,
+     "end": 16.532,
+     "text": "same",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 16.532,
+     "end": 16.772,
+     "text": "thing",
+     "probability": 0.99609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 16.772,
+     "end": 16.932000000000002,
+     "text": "and",
+     "probability": 0.890625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 16.932000000000002,
+     "end": 17.032,
+     "text": "you",
+     "probability": 0.9931640625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 17.032,
+     "end": 17.352,
+     "text": "don't",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 17.352,
+     "end": 17.412,
+     "text": "feel",
+     "probability": 0.99560546875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 17.412,
+     "end": 17.812,
+     "text": "passionate",
+     "probability": 0.998046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 17.812,
+     "end": 18.131999999999998,
+     "text": "about",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 18.131999999999998,
+     "end": 18.392,
+     "text": "it,",
+     "probability": 0.998046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 18.492,
+     "end": 18.992,
+     "text": "over",
+     "probability": 0.95654296875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 18.992,
+     "end": 19.212,
+     "text": "time",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 19.212,
+     "end": 19.412,
+     "text": "you",
+     "probability": 0.81201171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 19.412,
+     "end": 19.592,
+     "text": "stop",
+     "probability": 0.9853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 19.592,
+     "end": 19.951999999999998,
+     "text": "caring",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 19.951999999999998,
+     "end": 20.332,
+     "text": "and",
+     "probability": 0.7626953125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 20.332,
+     "end": 20.492,
+     "text": "over",
+     "probability": 0.9873046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 20.492,
+     "end": 20.752000000000002,
+     "text": "time",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 20.752000000000002,
+     "end": 21.252000000000002,
+     "text": "that's",
+     "probability": 0.949951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 21.252000000000002,
+     "end": 21.292,
+     "text": "where",
+     "probability": 0.99169921875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 21.292,
+     "end": 21.972,
+     "text": "you",
+     "probability": 0.99560546875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 21.972,
+     "end": 22.152,
+     "text": "just",
+     "probability": 0.9951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 22.152,
+     "end": 22.432000000000002,
+     "text": "stop",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 22.432000000000002,
+     "end": 23.272,
+     "text": "growing.",
+     "probability": 0.99658203125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 23.592,
+     "end": 23.832,
+     "text": "I",
+     "probability": 0.99560546875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 23.832,
+     "end": 24.032,
+     "text": "think",
+     "probability": 1.0,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 24.032,
+     "end": 24.352,
+     "text": "empty",
+     "probability": 0.8212890625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 24.352,
+     "end": 24.692,
+     "text": "backlog",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 24.692,
+     "end": 24.951999999999998,
+     "text": "is",
+     "probability": 0.99609375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 24.951999999999998,
+     "end": 25.032,
+     "text": "a",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 25.032,
+     "end": 25.252000000000002,
+     "text": "myth.",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 25.532,
+   "end": 30.392,
+   "text": "What would your one takeaway or piece of advice be for those software engineers if they're looking to level up?",
+   "words": [
+    {
+     "start": 25.532,
+     "end": 25.792,
+     "text": "What",
+     "probability": 0.5966796875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 25.792,
+     "end": 25.932,
+     "text": "would",
+     "probability": 0.97802734375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 25.932,
+     "end": 26.092,
+     "text": "your",
+     "probability": 0.8984375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 26.092,
+     "end": 26.772,
+     "text": "one",
+     "probability": 0.9755859375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 26.772,
+     "end": 27.072,
+     "text": "takeaway",
+     "probability": 0.74072265625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 27.072,
+     "end": 27.451999999999998,
+     "text": "or",
+     "probability": 0.95361328125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 27.451999999999998,
+     "end": 27.632,
+     "text": "piece",
+     "probability": 0.56103515625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 27.632,
+     "end": 27.792,
+     "text": "of",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 27.792,
+     "end": 28.032,
+     "text": "advice",
+     "probability": 0.994140625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 28.032,
+     "end": 28.312,
+     "text": "be",
+     "probability": 0.978515625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 28.312,
+     "end": 28.612000000000002,
+     "text": "for",
+     "probability": 0.98681640625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 28.612000000000002,
+     "end": 28.752,
+     "text": "those",
+     "probability": 0.94091796875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 28.752,
+     "end": 28.992,
+     "text": "software",
+     "probability": 0.970703125,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 28.992,
+     "end": 29.292,
+     "text": "engineers",
+     "probability": 0.998046875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 29.292,
+     "end": 29.552,
+     "text": "if",
+     "probability": 0.86962890625,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 29.552,
+     "end": 29.672,
+     "text": "they're",
+     "probability": 0.960693359375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 29.672,
+     "end": 29.832,
+     "text": "looking",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 29.832,
+     "end": 30.032,
+     "text": "to",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 30.032,
+     "end": 30.212,
+     "text": "level",
+     "probability": 0.99169921875,
+     "speaker": "SPEAKER_02"
+    },
+    {
+     "start": 30.212,
+     "end": 30.392,
+     "text": "up?",
+     "probability": 0.970703125,
+     "speaker": "SPEAKER_02"
+    }
+   ]
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 30.652,
+   "end": 40.812,
+   "text": "proactivity how to have more influence ownership all of those pieces have not been replaced by here but also in parallel now there's a new skill that you need to build which is",
+   "words": [
+    {
+     "start": 30.652,
+     "end": 31.432000000000002,
+     "text": "proactivity",
+     "probability": 0.7215169270833334,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 31.432000000000002,
+     "end": 31.992,
+     "text": "how",
+     "probability": 0.236328125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 31.992,
+     "end": 32.192,
+     "text": "to",
+     "probability": 0.994140625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 32.192,
+     "end": 32.392,
+     "text": "have",
+     "probability": 0.998046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 32.392,
+     "end": 32.592,
+     "text": "more",
+     "probability": 0.9970703125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 32.592,
+     "end": 33.012,
+     "text": "influence",
+     "probability": 0.9931640625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 33.012,
+     "end": 33.792,
+     "text": "ownership",
+     "probability": 0.93115234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 33.792,
+     "end": 34.512,
+     "text": "all",
+     "probability": 0.97412109375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 34.512,
+     "end": 34.712,
+     "text": "of",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 34.712,
+     "end": 34.912,
+     "text": "those",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 34.912,
+     "end": 35.192,
+     "text": "pieces",
+     "probability": 0.99560546875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 35.192,
+     "end": 35.632000000000005,
+     "text": "have",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 35.632000000000005,
+     "end": 35.872,
+     "text": "not",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 35.872,
+     "end": 36.112,
+     "text": "been",
+     "probability": 0.9951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 36.112,
+     "end": 36.432,
+     "text": "replaced",
+     "probability": 0.98291015625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 36.432,
+     "end": 36.672,
+     "text": "by",
+     "probability": 0.95703125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 36.672,
+     "end": 36.832,
+     "text": "here",
+     "probability": 0.395751953125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 36.832,
+     "end": 37.412,
+     "text": "but",
+     "probability": 0.92919921875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 37.412,
+     "end": 37.812,
+     "text": "also",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 37.812,
+     "end": 38.012,
+     "text": "in",
+     "probability": 0.99072265625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 38.012,
+     "end": 38.372,
+     "text": "parallel",
+     "probability": 0.97802734375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 38.372,
+     "end": 38.832,
+     "text": "now",
+     "probability": 0.9248046875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 38.832,
+     "end": 39.152,
+     "text": "there's",
+     "probability": 0.7413330078125,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.152,
+     "end": 39.212,
+     "text": "a",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.212,
+     "end": 39.412,
+     "text": "new",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.412,
+     "end": 39.632000000000005,
+     "text": "skill",
+     "probability": 0.97900390625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.632000000000005,
+     "end": 39.872,
+     "text": "that",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.872,
+     "end": 39.992000000000004,
+     "text": "you",
+     "probability": 0.99951171875,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 39.992000000000004,
+     "end": 40.132000000000005,
+     "text": "need",
+     "probability": 0.99853515625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 40.132000000000005,
+     "end": 40.292,
+     "text": "to",
+     "probability": 0.9990234375,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 40.292,
+     "end": 40.452,
+     "text": "build",
+     "probability": 0.95947265625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 40.452,
+     "end": 40.652,
+     "text": "which",
+     "probability": 0.94384765625,
+     "speaker": "SPEAKER_01"
+    },
+    {
+     "start": 40.652,
+     "end": 40.812,
+     "text": "is",
+     "probability": 0.978515625,
+     "speaker": "SPEAKER_01"
+    }
+   ]
+  }
+ ],
+ "turns": [
+  {
+   "speaker": "SPEAKER_01",
+   "start": 0.013,
+   "end": 5.853
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 4.613,
+   "end": 4.993
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 6.033,
+   "end": 12.233
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 12.312,
+   "end": 25.552
+  },
+  {
+   "speaker": "SPEAKER_02",
+   "start": 25.732,
+   "end": 30.552
+  },
+  {
+   "speaker": "SPEAKER_01",
+   "start": 30.852,
+   "end": 41.073
+  }
+ ],
+ "language": "en",
+ "duration": 41.813,
+ "timings": {
+  "load": 0.2,
+  "diarization": 6.1,
+  "language_id": 0.648,
+  "asr": 7.297,
+  "total": 14.254,
+  "rtf": 0.3409
+ },
+ "language_probability": 0.9998
+}

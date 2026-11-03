@@ -1,7 +1,7 @@
 """Run the joint pipeline over a test manifest and score it.
 
 Usage:
-    python -m diarai.evaluate --manifest data/synth/manifest.jsonl --out results/synth
+    python -m diarai.eval.evaluate --manifest data/synth/manifest.jsonl --out results/synth
 """
 
 import argparse
@@ -12,7 +12,7 @@ from pathlib import Path
 
 import numpy as np
 
-from diarai import metrics
+from diarai.eval import metrics
 
 
 def ref_words(ref_json):
@@ -34,22 +34,6 @@ def hyp_words(result):
         by_spk[u["speaker"]] += w
         all_words += w
     return all_words, dict(by_spk)
-
-
-def remerge(result, smooth=True, filler=None, audio=None):
-    from dataclasses import asdict
-
-    from diarai.pipeline import DiarAI, Turn, Word
-
-    words = sorted((Word(w["start"], w["end"], w["text"], w["probability"])
-                    for u in result["utterances"] for w in u["words"]), key=lambda w: w.start)
-    turns = [Turn(**t) for t in result["turns"]]
-    DiarAI.assign_speakers(words, turns, smooth)
-    if filler is not None:
-        from diarai.pipeline import load_audio
-
-        words = filler.fill_missing(load_audio(audio), words, turns, result.get("language"))
-    return {**result, "utterances": [asdict(u) for u in DiarAI.group(words)]}
 
 
 def score(item, result, fill_gaps=0.0):
@@ -108,53 +92,39 @@ def main():
     ap.add_argument("--manifest", type=Path, required=True)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--offset", type=int, default=0)
+    ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--language", default="en", help="manifest language ('auto' = detect)")
     ap.add_argument("--der-fill-gaps", type=float, default=0.0,
                     help="also score DER after merging same-speaker hyp gaps < this (reference annotation convention)")
-    ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--oracle-speakers", action="store_true", help="give the true speaker count to diarization")
     ap.add_argument("--rescore", action="store_true", help="only rescore existing hypotheses")
-    ap.add_argument("--remerge", action="store_true",
-                    help="with --rescore: redo the word->speaker merge on the saved words/turns with the current code")
-    ap.add_argument("--asr-model", default="large-v3-turbo")
-    ap.add_argument("--compute-type", default="int8_float16")
-    ap.add_argument("--no-smooth", action="store_true")
-    ap.add_argument("--fill-short-turns", action="store_true", help="second ASR pass over word-less diarized turns")
     ap.add_argument("--diar-step", type=float, default=0.1)
     ap.add_argument("--ahc-threshold", type=float, default=0.8)
     ap.add_argument("--no-refine", action="store_true")
-    ap.add_argument("--asr-batch-size", type=int, default=1, help="1 = sequential decoding (default), >1 = batched")
     args = ap.parse_args()
 
     items = [json.loads(l) for l in args.manifest.read_text().splitlines()][args.offset:][: args.limit]
     hyp_dir = args.out / "hyp"
     hyp_dir.mkdir(parents=True, exist_ok=True)
 
-    pipe = filler = None
+    pipe = None
     rows = []
     for item in items:
         hyp_path = hyp_dir / f"{item['uri']}.json"
         if args.rescore and hyp_path.exists():
             result = json.loads(hyp_path.read_text())
-            if args.remerge:
-                if args.fill_short_turns and filler is None:
-                    from diarai.pipeline import DiarAI
-
-                    filler = DiarAI(diar_model=None, language="en", asr_model=args.asr_model,
-                                    compute_type=args.compute_type)
-                result = remerge(result, smooth=not args.no_smooth,
-                                 filler=filler if args.fill_short_turns else None, audio=item["audio"])
         else:
             if pipe is None:
+                from diarai.models import Models
                 from diarai.pipeline import DiarAI
 
                 t = time.perf_counter()
-                pipe = DiarAI(asr_model=args.asr_model, compute_type=args.compute_type,
-                              smooth_words=not args.no_smooth, language="en", fill_short_turns=args.fill_short_turns,
-                              diar_step=args.diar_step, asr_batch_size=args.asr_batch_size,
-                              ahc_threshold=args.ahc_threshold, refine=not args.no_refine)
+                pipe = DiarAI(Models(diar_step=args.diar_step, ahc_threshold=args.ahc_threshold),
+                              language=None if args.language == "auto" else args.language,
+                              refine=not args.no_refine)
                 print(f"models loaded in {time.perf_counter() - t:.1f}s", flush=True)
                 pipe(np.zeros(16000 * 5, dtype=np.float32))  # silent input must not crash
-                from diarai.pipeline import load_audio
+                from diarai.audio import load_audio
 
                 pipe(load_audio(item["audio"])[: 16000 * 30])  # warm-up (CUDA ctx, cuDNN autotune)
             res = pipe(item["audio"], num_speakers=item["num_speakers"] if args.oracle_speakers else None)

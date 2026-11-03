@@ -1,34 +1,29 @@
-"""Joint transcription + speaker diarization on a single local GPU.
+"""Offline (whole-file) transcription + speaker diarization.
 
-DiariZen (WavLM + powerset EEND + VBx) and faster-whisper run concurrently on the same decoded
-waveform, in two threads (both release the GIL inside their GPU kernels). Each transcribed word
-is then attributed to the speaker whose diarization turns overlap it the most.
+1. DiariZen (WavLM + powerset EEND + VBx) finds who speaks when; every speaker turn is then re-embedded
+   and re-assigned to its nearest speaker centroid (refine).
+2. Language ID over several speech windows (restricted to config.LANGUAGES).
+3. Each speaker's turns are merged into <= 25 s units and decoded on their own with the language's
+   Whisper (IndicWhisper large for Hindi, large-v3 otherwise), so words can't cross speaker changes and
+   long-form Whisper can't drop or hallucinate sentences.
 """
 
+import itertools
+import logging
 import time
-from concurrent.futures import ThreadPoolExecutor
+import uuid
 from dataclasses import asdict, dataclass, field
-from pathlib import Path
-from typing import List, Optional, Union
-
-import ctypes
-import glob
-import os
+from typing import List, Optional
 
 import numpy as np
 import torch
 
-SAMPLE_RATE = 16000
+from diarai import config
+from diarai.audio import load_audio
+from diarai.config import SAMPLE_RATE
+from diarai.models import BATCH, Models, get_models
 
-
-def _preload_cudnn():
-    """CTranslate2 4.4 dlopen()s cuDNN 8 by soname; make the copy bundled with torch visible to it."""
-    for lib in ("libcudnn_ops_infer.so.8", "libcudnn_cnn_infer.so.8"):
-        for path in glob.glob(os.path.join(os.path.dirname(torch.__file__), "lib", lib)):
-            ctypes.CDLL(path, mode=ctypes.RTLD_GLOBAL)
-
-
-_preload_cudnn()
+log = logging.getLogger("diarai")
 
 
 @dataclass
@@ -63,9 +58,16 @@ class Result:
     language: Optional[str]
     duration: float
     timings: dict
+    language_probability: Optional[float] = None
 
     def to_dict(self):
         return asdict(self)
+
+    def to_sarvam(self, request_id: Optional[str] = None, with_timestamps: bool = True,
+                  with_diarization: bool = True) -> dict:
+        from diarai.formats import sarvam_response
+
+        return sarvam_response(self, request_id or uuid.uuid4().hex, with_timestamps, with_diarization)
 
     def to_rttm(self, uri: str) -> str:
         return "".join(
@@ -87,76 +89,89 @@ class Result:
         return "\n".join(f"[{u.start:8.2f} - {u.end:8.2f}] {u.speaker}: {u.text}" for u in self.utterances)
 
 
-def load_audio(audio: Union[str, Path, np.ndarray]) -> np.ndarray:
-    """Decode any audio/video file to 16 kHz mono float32 (PyAV, no ffmpeg binary needed)."""
-    if isinstance(audio, np.ndarray):
-        return audio.astype(np.float32)
-    from faster_whisper import decode_audio
+def decode(model, audio, max_segments=None, **kw):
+    """Run Whisper and materialise the segments. On a CUDA OOM: free PyTorch's cache and retry, then retry
+    greedily (beam search keeps beam_size copies of the decoder state)."""
+    for attempt in range(3):
+        try:
+            segments, _ = model.transcribe(audio, **kw)
+            return list(itertools.islice(segments, max_segments))  # lazy: errors surface while iterating
+        except RuntimeError as e:
+            if attempt == 2 or "out of memory" not in str(e):
+                raise
+            torch.cuda.empty_cache()
+            if attempt == 1:
+                kw = {**kw, "beam_size": 1}
 
-    return decode_audio(str(audio), sampling_rate=SAMPLE_RATE)
+
+def transcribe_unit(models: Models, audio: np.ndarray, language: str, offset: float, speaker: str,
+                    beam_size: int = 5, max_words_per_sec: float = 6.0, prompt: Optional[str] = "default",
+                    word_timestamps: bool = True) -> List[Word]:
+    """Decode one single-speaker unit (< 30 s). Call inside `with models.gpu(...)`."""
+    model, kw = models.whisper(language)
+    if prompt == "default":
+        prompt = config.PROMPTS.get(language)
+    dur = len(audio) / SAMPLE_RATE
+    # Bound the output to what the audio can hold (~20 tokens/s covers Devanagari's byte-level tokens).
+    # On noisy phone audio Whisper can otherwise loop on a phrase until the 448-token limit, and with beam
+    # search that decoder state outgrows a 4 GB GPU.
+    prompt_tokens = 2 * len(prompt) if prompt else 0
+    kw["max_new_tokens"] = max(16, min(440 - prompt_tokens // 2, int(24 + 20 * dur)))
+    try:
+        segments = decode(model, audio, language=language, beam_size=beam_size, initial_prompt=prompt,
+                          word_timestamps=word_timestamps, condition_on_previous_text=False, vad_filter=False,
+                          **kw,
+                          # without timestamps the first segment covers the whole (< 30 s) unit; later ones
+                          # come from faster-whisper re-seeking after the last aligned word and decoding the
+                          # padding (hallucinated tails) - don't even decode them
+                          max_segments=1 if kw.get("without_timestamps") else None)
+    except RuntimeError as e:
+        if "out of memory" not in str(e):
+            raise
+        log.warning("unit at %.1fs (%.1fs) skipped: GPU out of memory", offset, dur)
+        torch.cuda.empty_cache()
+        return []
+    segments = [s for s in segments if not (s.no_speech_prob > 0.6 and s.avg_logprob < -1.0)]
+    if word_timestamps:
+        words = [Word(w.start + offset, w.end + offset, w.word.strip(), w.probability, speaker)
+                 for s in segments for w in (s.words or []) if w.word.strip()]
+    else:
+        words = [Word(s.start + offset, s.end + offset, s.text.strip(), float(np.exp(s.avg_logprob)), speaker)
+                 for s in segments if s.text.strip()]
+    # a tiny overlapped turn decoded on its own often yields junk: no one says 6+ words per second
+    n = sum(len(w.text.split()) for w in words)
+    if n > max(1.0, max_words_per_sec * dur):
+        return []
+    # Whisper sometimes echoes the prompt on near-silence
+    text = " ".join(w.text for w in words).strip(" ।.,")
+    if prompt and len(text) >= 0.5 * len(prompt) and text in prompt:  # not short real words like "सर"
+        return []
+    return words
+
+
+def dedupe_crosstalk(units) -> List[Word]:
+    """units: [(duration, words)]. Overlapping turns of two speakers are decoded separately, so the louder
+    speaker's words can appear in both; keep a duplicated word only in the longer unit."""
+    words, kept = [], []
+    for dur, ws in sorted(units, key=lambda u: -u[0]):
+        for w in ws:
+            key = w.text.strip(".,?!।").lower()
+            if any(k == key and o.speaker != w.speaker and abs((o.start + o.end) - (w.start + w.end)) < 1.0
+                   for k, o in kept):
+                continue
+            kept.append((key, w))
+            words.append(w)
+    return sorted(words, key=lambda w: w.start)
 
 
 class DiarAI:
-    def __init__(
-        self,
-        asr_model: str = "large-v3-turbo",
-        diar_model: str = "BUT-FIT/diarizen-wavlm-large-s80-md",
-        device: str = "cuda",
-        compute_type: str = "int8_float16",
-        asr_batch_size: int = 1,
-        diar_batch_size: int = 2,
-        diar_step: float = 0.1,
-        ahc_threshold: Optional[float] = 0.8,
-        refine: bool = True,
-        beam_size: int = 5,
-        language: Optional[str] = None,
-        smooth_words: bool = True,
-        fill_short_turns: bool = False,
-    ):
-        from faster_whisper import BatchedInferencePipeline, WhisperModel
-        from diarizen.pipelines.inference import DiariZenPipeline
-
+    def __init__(self, models: Optional[Models] = None, language: Optional[str] = None, beam_size: int = 5,
+                 refine: bool = True, **model_kw):
+        """models: shared Models (default: the process-wide instance, created with **model_kw)."""
+        self.models = models or get_models(**model_kw)
         self.language = language
         self.beam_size = beam_size
-        self.asr_batch_size = asr_batch_size
-        self.smooth_words = smooth_words
-        self.fill_short_turns = fill_short_turns
-
-        self.asr = None
-        if asr_model is not None:
-            self.asr = WhisperModel(asr_model, device=device, compute_type=compute_type)
-            if asr_batch_size > 1:
-                self.asr = BatchedInferencePipeline(self.asr)
-
-        self.diar = None
         self.do_refine = refine
-        if diar_model is not None:
-            self.diar = DiariZenPipeline.from_pretrained(diar_model)
-            self.diar.segmentation_batch_size = diar_batch_size
-            self.diar.embedding_batch_size = diar_batch_size
-            # sliding-window hop as a fraction of the 16 s window (DiariZen default 0.1 = 10x overlap)
-            self.diar._segmentation.step = diar_step * self.diar._segmentation.duration
-            self._default_speakers = (self.diar.min_speakers, self.diar.max_speakers)
-            if ahc_threshold is not None:  # DiariZen ships 0.6; 0.8 + turn refinement was best on our dev split
-                self.diar.clustering.ahc_threshold = ahc_threshold
-
-    # ------------------------------------------------------------------ ASR
-    def transcribe(self, wav: np.ndarray):
-        common = dict(language=self.language, beam_size=self.beam_size, word_timestamps=True,
-                      condition_on_previous_text=False)
-        if self.asr_batch_size > 1:
-            segments, info = self.asr.transcribe(wav, batch_size=self.asr_batch_size, **common)
-        else:
-            # Sequential long-form decoding: on our dev split it never skips whole sentences the way
-            # batched 30 s windows occasionally do (WER 2.0% vs 2.9%), and it is hidden behind diarization.
-            segments, info = self.asr.transcribe(wav, vad_filter=True, **common)
-        words = [
-            Word(w.start, w.end, w.word.strip(), w.probability)
-            for s in segments
-            for w in (s.words or [])
-            if w.word.strip()
-        ]
-        return words, info.language
 
     # --------------------------------------------------------- diarization
     @torch.inference_mode()
@@ -164,8 +179,8 @@ class DiarAI:
         from pyannote.audio.utils.signal import Binarize
         from scipy.ndimage import median_filter
 
-        p = self.diar
-        lo, hi = self._default_speakers
+        p = self.models.diar
+        lo, hi = self.models.default_speakers
         if num_speakers:
             lo = hi = num_speakers
         lo, hi = min_speakers or lo, max_speakers or hi
@@ -236,11 +251,10 @@ class DiarAI:
                 total += take
                 if total >= max_dur:
                     break
-            x = torch.from_numpy(np.concatenate(chunks))[None, None]
-            e = self.diar._embedding(x)[0]
-            if np.all(np.isfinite(e)):
+            e = self.models.embed(np.concatenate(chunks), min_seconds=0.0)
+            if e is not None:
                 idx.append(gi)
-                embs.append(e / np.linalg.norm(e))
+                embs.append(e)
                 durs.append(min(dur, max_dur))
         if len(idx) < 2:
             return turns
@@ -277,7 +291,7 @@ class DiarAI:
 
     def _cluster(self, emb, seg, num_speakers=None):
         """DiariZen's VBx ignores min/max cluster hints; with a known speaker count, seed its AHC with it."""
-        c = self.diar.clustering
+        c = self.models.diar.clustering
         if not num_speakers:
             return c(embeddings=emb, segmentations=seg)
         saved = c.ahc_criterion, c.ahc_threshold
@@ -308,111 +322,72 @@ class DiarAI:
             out[hard_clusters == old] = new
         return out
 
-    def fill_missing(self, wav, words: List[Word], turns: List[Turn], language=None,
-                     min_dur: float = 0.3, max_dur: float = 15.0, max_coverage: float = 0.2) -> List[Word]:
-        """Second ASR pass over diarized turns that received (almost) no words.
-
-        Long-form Whisper favours the main speaker and drops short backchannels ("yeah", "okay")
-        and interjections inside overlaps. DiariZen does find those turns, so each one that has
-        < max_coverage of its duration covered by words of its own speaker is decoded on its own
-        and the result is attributed to that turn's speaker.
-        """
-        from faster_whisper import BatchedInferencePipeline
-
-        model = self.asr.model if isinstance(self.asr, BatchedInferencePipeline) else self.asr
-        added = []
-        for t in turns:
-            dur = t.end - t.start
-            if not (min_dur <= dur <= max_dur):
-                continue
-            covered = sum(max(0.0, min(w.end, t.end) - max(w.start, t.start)) for w in words if w.speaker == t.speaker)
-            if covered >= max_coverage * dur:
-                continue
-            a, b = max(0, int((t.start - 0.15) * SAMPLE_RATE)), int((t.end + 0.15) * SAMPLE_RATE)
-            segments, _ = model.transcribe(wav[a:b], language=language or self.language, beam_size=self.beam_size,
-                                           word_timestamps=True, condition_on_previous_text=False, vad_filter=False)
-            for seg in segments:
-                if seg.no_speech_prob > 0.6 or seg.avg_logprob < -1.0:
-                    continue
-                off = a / SAMPLE_RATE
-                added += [Word(w.start + off, w.end + off, w.word.strip(), w.probability, t.speaker)
-                          for w in (seg.words or []) if w.word.strip()]
-        return sorted(words + added, key=lambda w: w.start)
-
-    # --------------------------------------------------------------- merge
+    # ------------------------------------------------------------------ ASR
     @staticmethod
-    def assign_speakers(words: List[Word], turns: List[Turn], smooth: bool = True, overlap_tie: float = 0.8) -> None:
-        if not turns:
-            for w in words:
-                w.speaker = "SPEAKER_00"
-            return
-        starts = np.array([t.start for t in turns])
-        ends = np.array([t.end for t in turns])
-        labels = [t.speaker for t in turns]
-        for w in words:
-            ov = np.minimum(ends, w.end) - np.maximum(starts, w.start)
-            score, latest = {}, {}
-            for i in np.flatnonzero(ov > 0):
-                score[labels[i]] = score.get(labels[i], 0.0) + ov[i]
-                latest[labels[i]] = max(latest.get(labels[i], -1.0), starts[i])
-            if score:
-                # Overlapped speech: when several speakers cover the word about equally, Whisper has
-                # usually followed the speaker who just took the floor -> prefer the most recent turn.
-                best = max(score.values())
-                tied = [k for k in score if score[k] >= overlap_tie * best]
-                w.speaker = max(tied, key=latest.get)
-            else:  # word falls in a diarization gap: take the closest turn
-                mid = 0.5 * (w.start + w.end)
-                dist = np.maximum(starts - mid, 0) + np.maximum(mid - ends, 0)
-                w.speaker = labels[int(np.argmin(dist))]
-        if smooth:
-            DiarAI._smooth(words)
+    def speaker_segments(turns: List[Turn], max_gap: float = 0.6, max_len: float = 25.0):
+        """Merge each speaker's diarization turns across short pauses into decoding units of <= max_len s,
+        splitting long monologues at their pauses."""
+        units = []
+        for spk in sorted({t.speaker for t in turns}):
+            cur = None
+            for t in sorted((t for t in turns if t.speaker == spk), key=lambda t: t.start):
+                if cur and t.start - cur[2] <= max_gap and t.end - cur[1] <= max_len:
+                    cur[2] = max(cur[2], t.end)
+                else:
+                    cur = [spk, t.start, t.end]
+                    units.append(cur)
+        out = []
+        for spk, a, b in units:  # a single turn longer than max_len: cut into equal pieces
+            n = int(np.ceil((b - a) / max_len))
+            out += [(spk, a + i * (b - a) / n, a + (i + 1) * (b - a) / n) for i in range(n)]
+        return sorted(out, key=lambda u: u[1])
+
+    def transcribe_turns(self, wav, turns: List[Turn], language: str, pad: float = 0.2,
+                         priority: int = BATCH) -> List[Word]:
+        units = []
+        for spk, a, b in self.speaker_segments(turns):
+            i, j = max(0, int((a - pad) * SAMPLE_RATE)), min(len(wav), int((b + pad) * SAMPLE_RATE))
+            with self.models.gpu(priority):  # per unit, so live streams can cut in between
+                ws = transcribe_unit(self.models, wav[i:j], language, i / SAMPLE_RATE, spk, self.beam_size)
+            units.append((b - a, ws))
+
+        return dedupe_crosstalk(units)
 
     @staticmethod
-    def _smooth(words: List[Word], max_island: int = 2, max_island_dur: float = 0.6) -> None:
-        """Relabel tiny speaker 'islands' (<= max_island words) sandwiched inside another speaker's run.
-
-        Whisper word timestamps are typically off by ~0.1-0.3 s; at speaker changes this flips a
-        word or two onto the wrong side. Real interjections are usually separated by pauses, so
-        only islands that are tightly packed between the neighbouring words are merged.
-        """
-        i = 0
-        while i < len(words):
-            j = i
-            while j + 1 < len(words) and words[j + 1].speaker == words[i].speaker:
-                j += 1
-            if 0 < i and j + 1 < len(words) and j - i + 1 <= max_island:
-                left, right = words[i - 1], words[j + 1]
-                if (
-                    left.speaker == right.speaker
-                    and words[j].end - words[i].start <= max_island_dur
-                    and words[i].start - left.end < 0.3
-                    and right.start - words[j].end < 0.3
-                ):
-                    for k in range(i, j + 1):
-                        words[k].speaker = left.speaker
-            i = j + 1
-
-    @staticmethod
-    def group(words: List[Word], max_gap: float = 1.5) -> List[Utterance]:
+    def group(words: List[Word], max_gap: float = 1.5, max_len: float = 20.0,
+              min_interruption: float = 1.0) -> List[Utterance]:
+        """Words -> utterances, per speaker. A speaker's utterance continues across words of others that
+        overlap it or total < min_interruption s (backchannels, cross-talk), so overlapped speech reads as
+        two overlapping utterances instead of word-by-word ping-pong. Past max_len s an utterance is split
+        at a sentence end or pause. Utterances are returned in start-time order."""
         utts: List[Utterance] = []
+        open_: dict = {}  # speaker -> current utterance
+        others: dict = {}  # speaker -> seconds others spoke after that speaker's last word
         for w in words:
-            u = utts[-1] if utts else None
-            if u and u.speaker == w.speaker and w.start - u.end <= max_gap:
+            for spk, u in open_.items():
+                if spk != w.speaker and w.start >= u.end:
+                    others[spk] = others.get(spk, 0.0) + (w.end - w.start)
+            u = open_.get(w.speaker)
+            long = u is not None and (w.end - u.start > 2 * max_len or (
+                u.end - u.start >= max_len and (u.words[-1].text[-1:] in ".?!।" or w.start - u.end >= 0.3)))
+            if u and w.start - u.end <= max_gap and others.get(w.speaker, 0.0) < min_interruption and not long:
                 u.words.append(w)
                 u.end = max(u.end, w.end)
             else:
-                utts.append(Utterance(w.speaker, w.start, w.end, "", [w]))
+                u = Utterance(w.speaker, w.start, w.end, "", [w])
+                utts.append(u)
+                open_[w.speaker] = u
+            others[w.speaker] = 0.0
         for u in utts:
             u.text = " ".join(w.text for w in u.words)
-        return utts
+        return sorted(utts, key=lambda u: u.start)
 
     # ---------------------------------------------------------------- main
-    def __call__(self, audio, num_speakers=None, min_speakers=None, max_speakers=None) -> Result:
+    def __call__(self, audio, num_speakers=None, min_speakers=None, max_speakers=None,
+                 language: Optional[str] = None, priority: int = BATCH) -> Result:
         t0 = time.perf_counter()
         wav = load_audio(audio)
-        t_load = time.perf_counter() - t0
-        timings = {}
+        timings = {"load": round(time.perf_counter() - t0, 3)}
 
         def timed(name, fn, *a, **kw):
             s = time.perf_counter()
@@ -420,20 +395,18 @@ class DiarAI:
             timings[name] = round(time.perf_counter() - s, 3)
             return out
 
-        with ThreadPoolExecutor(max_workers=2) as ex:
-            f_asr = ex.submit(timed, "asr", self.transcribe, wav)
-            f_diar = ex.submit(timed, "diarization", self.diarize, wav, num_speakers, min_speakers, max_speakers)
-            words, language = f_asr.result()
-            turns = f_diar.result()
-
-        s = time.perf_counter()
-        self.assign_speakers(words, turns, self.smooth_words)
-        if self.fill_short_turns and self.asr is not None:
-            words = timed("fill", self.fill_missing, wav, words, turns, language)
+        with self.models.gpu(priority):
+            turns = timed("diarization", self.diarize, wav, num_speakers, min_speakers, max_speakers)
+            torch.cuda.empty_cache()  # give the activation memory back before Whisper runs
+        language, lang_p = language or self.language, None
+        if language is None:
+            with self.models.gpu(priority):  # vote over several 30 s speech windows
+                language, lang_p = timed("language_id", self.models.detect_language, wav, segments=4,
+                                         vad_filter=True)
+        words = timed("asr", self.transcribe_turns, wav, turns, language, priority=priority)
         utts = self.group(words)
-        timings["merge"] = round(time.perf_counter() - s, 3)
-        timings["load"] = round(t_load, 3)
-        timings["total"] = round(time.perf_counter() - t0, 3)
         duration = len(wav) / SAMPLE_RATE
+        timings["total"] = round(time.perf_counter() - t0, 3)
         timings["rtf"] = round(timings["total"] / max(duration, 1e-6), 4)
-        return Result(utts, turns, language, round(duration, 3), timings)
+        return Result(utts, turns, language, round(duration, 3), timings,
+                      None if lang_p is None else round(float(lang_p), 4))

@@ -1,0 +1,110 @@
+{
+ "pooled": {
+  "wer": 0.12061711079943899,
+  "cpwer": 0.1402524544179523,
+  "cer": 0.06496350364963503,
+  "cpcer": 0.08503649635036496,
+  "der": 0.03938119505467529
+ },
+ "files": [
+  {
+   "uri": "podcast_hi",
+   "language": "hi",
+   "detected_language": "hi",
+   "duration": 60.709,
+   "ref_words": 225,
+   "ref_chars": 765,
+   "wer": 0.19111111111111112,
+   "cer": 0.11372549019607843,
+   "cpwer": 0.17777777777777778,
+   "cpcer": 0.10065359477124183,
+   "der": 0.05273878055737713,
+   "der_parts": {
+    "missed detection": 0.0009962696394267543,
+    "false alarm": 0.04461238614076692,
+    "confusion": 0.00713012477718345
+   },
+   "ref_speakers": 2,
+   "hyp_speakers": 2,
+   "speaker_map": {
+    "SPEAKER_00": "S2",
+    "SPEAKER_01": "S1"
+   },
+   "seconds": 47.35533436600235
+  },
+  {
+   "uri": "comedy_hi",
+   "language": "hi",
+   "detected_language": "hi",
+   "duration": 45.186,
+   "ref_words": 133,
+   "ref_chars": 472,
+   "wer": 0.19548872180451127,
+   "cer": 0.10805084745762712,
+   "cpwer": 0.18045112781954886,
+   "cpcer": 0.0847457627118644,
+   "der": 0.044883045808861044,
+   "der_parts": {
+    "missed detection": 0.015804842370097966,
+    "false alarm": 0.02904623412930001,
+    "confusion": 3.196930946306825e-05
+   },
+   "ref_speakers": 2,
+   "hyp_speakers": 2,
+   "speaker_map": {
+    "SPEAKER_00": "S2",
+    "SPEAKER_01": "S1"
+   },
+   "seconds": 30.15175288300088
+  },
+  {
+   "uri": "agent_en",
+   "language": "en",
+   "detected_language": "en",
+   "duration": 69.483,
+   "ref_words": 210,
+   "ref_chars": 889,
+   "wer": 0.05714285714285714,
+   "cer": 0.02699662542182227,
+   "cpwer": 0.05714285714285714,
+   "cpcer": 0.02699662542182227,
+   "der": 0.00269612956485389,
+   "der_parts": {
+    "missed detection": 0.00269612956485389,
+    "false alarm": 0.0,
+    "confusion": 0.0
+   },
+   "ref_speakers": 1,
+   "hyp_speakers": 1,
+   "speaker_map": {
+    "SPEAKER_00": "S1"
+   },
+   "seconds": 15.560898057003214
+  },
+  {
+   "uri": "meta_en",
+   "language": "en",
+   "detected_language": "en",
+   "duration": 41.813,
+   "ref_words": 145,
+   "ref_chars": 614,
+   "wer": 0.034482758620689655,
+   "cer": 0.026058631921824105,
+   "cpwer": 0.16551724137931034,
+   "cpcer": 0.1498371335504886,
+   "der": 0.07500303799747055,
+   "der_parts": {
+    "missed detection": 0.02583807973210489,
+    "false alarm": 0.0,
+    "confusion": 0.04916495826536566
+   },
+   "ref_speakers": 3,
+   "hyp_speakers": 2,
+   "speaker_map": {
+    "SPEAKER_00": "S1",
+    "SPEAKER_01": "S2"
+   },
+   "seconds": 10.500609741000517
+  }
+ ]
+}

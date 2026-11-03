@@ -4,7 +4,7 @@ Segmentations and embeddings are computed once per file and cached; only cluster
 reconstruction is re-run per configuration, scored by DER (no collar).
 
 Usage:
-    python -m diarai.tune_clustering --manifest data/synth/manifest.jsonl --dev 10 --diar-step 0.1
+    python -m diarai.eval.tune_clustering --manifest data/synth/manifest.jsonl --dev 10 --diar-step 0.1
 """
 
 import argparse
@@ -17,12 +17,15 @@ import numpy as np
 import torch
 from scipy.ndimage import median_filter
 
-from diarai import metrics
-from diarai.pipeline import SAMPLE_RATE, DiarAI, load_audio
+from diarai.eval import metrics
+from diarai.audio import load_audio
+from diarai.config import SAMPLE_RATE
+from diarai.models import Models
+from diarai.pipeline import DiarAI
 
 
 def cache_features(pipe, items, cache_dir: Path):
-    p = pipe.diar
+    p = pipe.models.diar
     feats = {}
     for item in items:
         path = cache_dir / f"{item['uri']}.pkl"
@@ -64,7 +67,7 @@ def main():
     items = [json.loads(l) for l in args.manifest.read_text().splitlines()][: args.dev]
     cache = args.cache / f"step{args.diar_step}"
     cache.mkdir(parents=True, exist_ok=True)
-    pipe = DiarAI(diar_step=args.diar_step, asr_model=None)
+    pipe = DiarAI(Models(diar_step=args.diar_step, asr_model="large-v3", lang_models={}))
     feats = cache_features(pipe, items, cache)
 
     grid = {"ahc_threshold": [0.5, 0.6, 0.7, 0.8], "Fa": [0.07, 0.2, 0.4], "Fb": [0.8, 3.0, 8.0]}
@@ -74,7 +77,7 @@ def main():
         ders, conf, nspk = [], [], []
         for item in items:
             seg, count, emb = feats[item["uri"]]
-            turns = run(pipe.diar, seg, count, emb, params)
+            turns = run(pipe.models.diar, seg, count, emb, params)
             d = metrics.der(item["rttm"], turns, item["uri"])
             ders.append(d["diarization error rate"])
             conf.append(d["confusion"] / d["total"])
