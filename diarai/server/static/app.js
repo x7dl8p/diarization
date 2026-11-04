@@ -1,20 +1,23 @@
 "use strict";
-// diarai web client: plays the chosen file, captures its PCM while it plays and streams it over the
-// WebSocket in real time; transcript lines with speakers stream back. The card's border shows playback.
+// diarai web client. Files are queued and streamed one at a time (one GPU): each file is decoded by a muted
+// player whose PCM goes over the WebSocket in real time, while transcript lines with speakers stream back
+// into that file's own section. You hear the file (a second, audible player) from its first returned text
+// on, so sound and text stay roughly in step. The card's border shows how much of the current file is sent.
 
 const $ = (s) => document.querySelector(s);
 const els = {
   key: $("#key"), remember: $("#remember"), card: $("#card"), file: $("#file"), pick: $("#pick"),
-  browse: $("#browse"), chosen: $("#chosen"), fname: $("#fname"), fdur: $("#fdur"), lang: $("#lang"),
-  partials: $("#partials"), final: $("#final"), change: $("#change"), go: $("#go"), status: $("#status"),
-  lines: $("#lines"), ttitle: $("#ttitle"), tools: $("#tools"), copy: $("#copy"), dltxt: $("#dltxt"),
-  dljson: $("#dljson"), player: $("#player"),
+  browse: $("#browse"), chosen: $("#chosen"), fname: $("#fname"), fdur: $("#fdur"), queue: $("#queue"),
+  lang: $("#lang"), partials: $("#partials"), final: $("#final"), add: $("#add"), go: $("#go"),
+  status: $("#status"), jobsEl: $("#jobs"), apiprompt: $("#apiprompt"), player: $("#player"),
   ringBase: document.querySelector(".ring-base"), ringFill: document.querySelector(".ring-fill"),
 };
 
 const KEY_STORE = "diarai.key";
-let file = null, url = null;
-let run = null; // {ws, ctx, src, node, pending, chunk, state, live:[], final:null}
+const jobs = [];      // {id, file, url, name, dur, state, live, final, el, linesEl, statusEl, toolsEl, removeEl}
+let current = null;   // job being streamed
+let running = false;  // queue mode: start the next queued job when one finishes
+let seq = 0;
 
 // ------------------------------------------------------------------ key
 try {
@@ -34,20 +37,18 @@ function status(text, err = false) {
   els.status.textContent = text;
   els.status.classList.toggle("err", err);
 }
-let perimeter = 0;
+let perimeter = 0, lastProgress = 0;
 function layoutRing() {
   const r = els.card.getBoundingClientRect();
   for (const rect of [els.ringBase, els.ringFill]) {
     rect.setAttribute("x", 1); rect.setAttribute("y", 1);
     rect.setAttribute("width", Math.max(0, r.width - 2)); rect.setAttribute("height", Math.max(0, r.height - 2));
     rect.setAttribute("rx", 13);
-    rect.removeAttribute("pathLength");
   }
   perimeter = els.ringFill.getTotalLength ? els.ringFill.getTotalLength() : 2 * (r.width + r.height);
   els.ringFill.style.strokeDasharray = `${perimeter} ${perimeter}`;
   setProgress(lastProgress, false);
 }
-let lastProgress = 0;
 function setProgress(p, animate = true) {
   lastProgress = Math.max(0, Math.min(1, p));
   els.ringFill.style.transition = animate && lastProgress > 0 ? "" : "none";
@@ -62,96 +63,172 @@ const fmt = (s) => {
   return h ? `${h}:${String(m).padStart(2, "0")}:${ss}` : `${m}:${ss}`;
 };
 
-// ------------------------------------------------------------------ file
-function setFile(f) {
-  if (!f) return;
-  if (run && run.state !== "done") return;
-  file = f;
-  if (url) URL.revokeObjectURL(url);
-  url = URL.createObjectURL(f);
-  els.player.src = url;
-  els.fname.textContent = f.name;
-  els.fdur.textContent = "…";
-  els.pick.hidden = true;
-  els.chosen.hidden = false;
-  els.card.classList.add("ready");
-  setProgress(0);
-  status("ready");
+// --------------------------------------------------------------- clipboard
+async function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    try { await navigator.clipboard.writeText(text); return true; } catch (_) { /* fall through */ }
+  }
+  const ta = document.createElement("textarea"); // plain-http origins have no async clipboard
+  ta.value = text;
+  ta.setAttribute("readonly", "");
+  ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.append(ta);
+  ta.select();
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch (_) {}
+  ta.remove();
+  return ok;
 }
-els.player.addEventListener("loadedmetadata", () => { els.fdur.textContent = fmt(els.player.duration); });
-els.player.addEventListener("error", () => { if (file) status("this browser can't play that file", true); });
+function flash(btn, ok, label) {
+  btn.textContent = ok ? "copied" : "copy failed";
+  setTimeout(() => (btn.textContent = label), 1500);
+}
+
+// ------------------------------------------------------------ API prompt
+function apiPrompt() {
+  const o = location.origin, ws = o.replace(/^http/, "ws");
+  return `diarai is a self-hosted speech-to-text API with speaker diarization (who said what) for Hindi and English, with output in Sarvam AI's speech-to-text format. Base URL: ${o}; interactive docs at ${o}/docs and the OpenAPI schema at ${o}/openapi.json; GET ${o}/health needs no key. Every other request needs an API key in the header \`Api-Subscription-Key: <key>\` (or \`Authorization: Bearer <key>\`). The key is not included here: ask the user to paste it, keep it in an environment variable or secret store (e.g. DIARAI_API_KEY), and never put it in code, URLs or logs.
+
+For a recording, POST ${o}/speech-to-text as multipart/form-data with \`file\` (any audio or video, including 8 kHz call audio) and optional \`language_code\` (hi-IN, en-IN, or unknown to auto-detect), \`num_speakers\` (e.g. 2 for a phone call), \`with_timestamps\` and \`with_diarization\` (both default true). The JSON response has \`transcript\`, \`diarized_transcript.entries[]\` (each {transcript, start_time_seconds, end_time_seconds, speaker_id}), \`language_code\` and \`metrics\`. It runs on one GPU at roughly real time, so send files one at a time and allow a timeout of several minutes. For live audio, open ${ws}/speech-to-text/ws?language-code=hi-IN&input_audio_codec=pcm_s16le&sample_rate=16000 with the same header (browsers pass the key as WebSocket subprotocols ["diarai", "key.<key>"]), wait for the READY event, send 16-bit mono PCM as binary frames in real time, then send {"type":"end"}; the server replies with JSON messages of type data (a finished line with its speaker), partial, events (READY, END_OF_STREAM) and final (the whole result in the batch format).`;
+}
+els.apiprompt.addEventListener("click", async () => flash(els.apiprompt, await copyText(apiPrompt()), "copy API prompt"));
+
+// ------------------------------------------------------------------ files
+function addFiles(list) {
+  const fresh = [...list].filter((f) => f && f.size);
+  if (!fresh.length) return;
+  if (!jobs.length) els.jobsEl.replaceChildren();
+  for (const f of fresh) {
+    const job = { id: ++seq, file: f, url: URL.createObjectURL(f), name: f.name, dur: 0, state: "queued",
+                  live: [], final: null };
+    buildSection(job);
+    jobs.push(job);
+    const probe = new Audio();
+    probe.preload = "metadata";
+    probe.addEventListener("loadedmetadata", () => { job.dur = probe.duration; jobStatus(job); renderCard(); });
+    probe.addEventListener("error", () => { if (job.state === "queued") jobStatus(job, "this browser can't play that file", true); });
+    probe.src = job.url;
+  }
+  renderCard();
+  if (!running) status(`${queued().length} file${queued().length === 1 ? "" : "s"} ready`);
+}
+const queued = () => jobs.filter((j) => j.state === "queued");
+
+function renderCard() {
+  const show = current || queued()[0];
+  els.pick.hidden = !!show;
+  els.chosen.hidden = !show;
+  els.card.classList.toggle("ready", !!show);
+  if (!show) { setProgress(0); return; }
+  els.fname.textContent = show.name;
+  els.fdur.textContent = show.dur ? fmt(show.dur) : "…";
+  const rest = queued().filter((j) => j !== show).length;
+  els.queue.hidden = !rest;
+  els.queue.textContent = rest ? `+ ${rest} more queued, transcribed one after another` : "";
+}
+
 els.browse.addEventListener("click", (e) => { e.stopPropagation(); els.file.click(); });
 els.pick.addEventListener("click", () => els.file.click());
-els.change.addEventListener("click", () => els.file.click());
-els.file.addEventListener("change", () => setFile(els.file.files[0]));
-els.card.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && !file) els.file.click(); });
+els.add.addEventListener("click", () => els.file.click());
+els.file.addEventListener("change", () => { addFiles(els.file.files); els.file.value = ""; });
+els.card.addEventListener("keydown", (e) => {
+  if ((e.key === "Enter" || e.key === " ") && e.target === els.card) { e.preventDefault(); els.file.click(); }
+});
 for (const ev of ["dragenter", "dragover"]) els.card.addEventListener(ev, (e) => { e.preventDefault(); els.card.classList.add("drag"); });
 for (const ev of ["dragleave", "drop"]) els.card.addEventListener(ev, (e) => { e.preventDefault(); els.card.classList.remove("drag"); });
-els.card.addEventListener("drop", (e) => setFile(e.dataTransfer.files[0]));
+els.card.addEventListener("drop", (e) => addFiles(e.dataTransfer.files));
+
+// --------------------------------------------------------- job sections
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function buildSection(job) {
+  const sec = el("section", "job");
+  const head = el("div", "thead");
+  const titles = el("div", "jhead");
+  titles.append(el("p", "jname", job.name), (job.statusEl = el("span", "jstatus", "queued")));
+  const tools = el("div", "tools");
+  const copy = el("button", "link", "copy"), txt = el("button", "link", ".txt"), json = el("button", "link", ".json");
+  const remove = el("button", "link", "remove");
+  for (const b of [copy, txt, json, remove]) b.type = "button";
+  job.toolsEls = [copy, txt, json];
+  for (const b of job.toolsEls) b.hidden = true;
+  tools.append(copy, txt, json, remove);
+  head.append(titles, tools);
+  job.linesEl = el("div", "lines");
+  job.linesEl.append(el("p", "empty muted", "Waiting for its turn."));
+  sec.append(head, job.linesEl);
+  job.el = sec;
+  job.removeEl = remove;
+
+  const base = job.name.replace(/\.[^.]+$/, "") || "transcript";
+  copy.addEventListener("click", async () => flash(copy, await copyText(asText(job)), "copy"));
+  txt.addEventListener("click", () => download(base + ".txt", asText(job), "text/plain"));
+  json.addEventListener("click", () => download(base + ".json",
+    JSON.stringify(job.final || { diarized_transcript: { entries: job.live } }, null, 1), "application/json"));
+  remove.addEventListener("click", () => {
+    if (job === current) return;
+    jobs.splice(jobs.indexOf(job), 1);
+    URL.revokeObjectURL(job.url);
+    sec.remove();
+    if (!jobs.length) els.jobsEl.append(el("p", "empty muted", "Each file's text appears here."));
+    renderCard();
+  });
+  els.jobsEl.append(sec);
+}
+function jobStatus(job, text, err = false) {
+  if (text === undefined) text = job.state === "queued" ? `queued${job.dur ? " · " + fmt(job.dur) : ""}` : job.statusEl.textContent;
+  job.statusEl.textContent = text;
+  job.statusEl.classList.toggle("err", err);
+}
+function showTools(job) {
+  const has = !!entries(job).length;
+  for (const b of job.toolsEls) b.hidden = !has;
+  job.removeEl.hidden = job === current;
+}
 
 // ------------------------------------------------------------ transcript
-function clearLines() {
-  els.lines.replaceChildren();
-  els.tools.hidden = true;
-  els.ttitle.textContent = "Transcript";
-}
 function lineEl(spk, t, text, partial = false) {
-  const div = document.createElement("div");
-  div.className = "line" + (partial ? " partial" : "");
-  const meta = document.createElement("div");
-  meta.className = "meta";
-  if (spk !== null) {
-    const chip = document.createElement("span");
-    chip.className = `spk s${Number(spk) % 4}`;
-    chip.textContent = `Speaker ${Number(spk) + 1}`;
-    meta.append(chip);
-  }
-  const ts = document.createElement("span");
-  ts.className = "t";
-  ts.textContent = fmt(t);
-  meta.append(ts);
-  const p = document.createElement("p");
-  p.className = "text";
-  p.textContent = text;
-  div.append(meta, p);
+  const div = el("div", "line" + (partial ? " partial" : ""));
+  const meta = el("div", "meta");
+  if (spk !== null) meta.append(el("span", `spk s${Number(spk) % 4}`, `Speaker ${Number(spk) + 1}`));
+  meta.append(el("span", "t", fmt(t)));
+  div.append(meta, el("p", "text", text));
   return div;
 }
-function partialLine() { return els.lines.querySelector(".line.partial"); }
-function showPartial(t, text) {
-  let el = partialLine();
-  if (!text) { if (el) el.remove(); return; }
+function clearEmpty(job) { const e = job.linesEl.querySelector(".empty"); if (e) e.remove(); }
+function showPartial(job, t, text) {
+  const old = job.linesEl.querySelector(".line.partial");
+  if (!text) { if (old) old.remove(); return; }
+  clearEmpty(job);
   const fresh = lineEl(null, t, text, true);
-  if (el) el.replaceWith(fresh); else els.lines.append(fresh);
+  if (old) old.replaceWith(fresh); else job.linesEl.append(fresh);
   follow();
 }
-function addLine(d) {
-  const p = partialLine();
-  const el = lineEl(d.speaker_id, d.start_time_seconds, d.transcript);
+function addLine(job, d) {
+  clearEmpty(job);
+  const p = job.linesEl.querySelector(".line.partial");
+  const line = lineEl(d.speaker_id, d.start_time_seconds, d.transcript);
+  line.dataset.t = d.start_time_seconds;
   // keep time order (segments of different speakers can finish together)
-  const after = [...els.lines.querySelectorAll(".line:not(.partial)")].find(
-    (x) => Number(x.dataset.t) > d.start_time_seconds);
-  el.dataset.t = d.start_time_seconds;
-  if (after) els.lines.insertBefore(el, after); else els.lines.insertBefore(el, p || null);
+  const after = [...job.linesEl.querySelectorAll(".line:not(.partial)")].find((x) => Number(x.dataset.t) > d.start_time_seconds);
+  job.linesEl.insertBefore(line, after || p || null);
   follow();
 }
 function follow() {
   const nearBottom = window.innerHeight + window.scrollY > document.body.scrollHeight - 160;
   if (nearBottom) window.scrollTo({ top: document.body.scrollHeight });
 }
-function showFinal(d) {
-  clearLines();
-  els.ttitle.textContent = "Final transcript";
-  for (const e of d.diarized_transcript.entries) {
-    els.lines.append(lineEl(e.speaker_id, e.start_time_seconds, e.transcript));
-  }
+function showFinal(job) {
+  job.linesEl.replaceChildren();
+  for (const e of job.final.diarized_transcript.entries) job.linesEl.append(lineEl(e.speaker_id, e.start_time_seconds, e.transcript));
+  if (!job.final.diarized_transcript.entries.length) job.linesEl.append(el("p", "empty muted", "No speech found."));
 }
-function entries() {
-  if (run && run.final) return run.final.diarized_transcript.entries;
-  return run ? run.live : [];
-}
-function asText() {
-  return entries().map((e) => `[${fmt(e.start_time_seconds)}] Speaker ${Number(e.speaker_id) + 1}: ${e.transcript}`).join("\n");
-}
+const entries = (job) => (job.final ? job.final.diarized_transcript.entries : job.live);
+const asText = (job) => entries(job).map((e) => `[${fmt(e.start_time_seconds)}] Speaker ${Number(e.speaker_id) + 1}: ${e.transcript}`).join("\n");
 function download(name, text, type) {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([text], { type }));
@@ -159,41 +236,62 @@ function download(name, text, type) {
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
-const base = () => (file ? file.name.replace(/\.[^.]+$/, "") : "transcript");
-els.dltxt.addEventListener("click", () => download(base() + ".txt", asText(), "text/plain"));
-els.dljson.addEventListener("click", () => download(base() + ".json",
-  JSON.stringify(run && run.final ? run.final : { diarized_transcript: { entries: entries() } }, null, 1), "application/json"));
-if (!navigator.clipboard) els.copy.hidden = true;
-els.copy.addEventListener("click", async () => {
-  try { await navigator.clipboard.writeText(asText()); els.copy.textContent = "copied"; }
-  catch (_) { els.copy.textContent = "copy failed"; }
-  setTimeout(() => (els.copy.textContent = "copy"), 1500);
-});
 
-// --------------------------------------------------------------- stream
+// --------------------------------------------------------------- queue
 function setRunning(on) {
+  running = on;
   els.go.textContent = on ? "Stop" : "Start";
-  els.change.hidden = on;
-  for (const el of [els.lang, els.partials, els.final, els.key]) el.disabled = on;
+  for (const e of [els.lang, els.partials, els.final, els.key]) e.disabled = on;
 }
-
-async function start() {
+function startQueue() {
   const key = els.key.value.trim();
   if (!key) { status("paste your API key first", true); els.key.focus(); return; }
   if (!/^[A-Za-z0-9_\-]+$/.test(key)) { status("that doesn't look like a diarai key", true); return; }
-  if (!file) return;
+  if (!queued().length) return;
   saveKey();
-  clearLines();
+  if (current) { setRunning(true); return; } // a stopped file is still finishing; the queue resumes after it
+  // unlock delayed playback while we still hold the click's user activation
+  const p = els.player;
+  p.src = queued()[0].url;
+  p.muted = true;
+  p.play().then(() => { p.pause(); p.muted = false; }).catch(() => { p.muted = false; });
+  setRunning(true);
+  next();
+}
+function next() {
+  const job = running ? queued()[0] : null;
+  const prev = current;
+  current = null;
+  if (prev) showTools(prev);
+  if (!job) {
+    setRunning(false);
+    renderCard();
+    const done = jobs.filter((j) => j.state === "done").length;
+    if (!queued().length && done) status(`done · ${done} file${done === 1 ? "" : "s"}`);
+    return;
+  }
+  startJob(job, els.key.value.trim());
+}
+
+async function startJob(job, key) {
+  current = job;
+  job.state = "connecting";
+  job.live = []; job.final = null; job.heard = false;
+  job.linesEl.replaceChildren(el("p", "empty muted", "Listening… the audio plays once the first text comes back."));
+  for (const j of jobs) j.el.classList.toggle("active", j === job);
+  showTools(job);
+  renderCard();
   setProgress(0);
+  els.card.classList.add("busy");
+  jobStatus(job, "connecting…");
+  status(`connecting · ${job.name}`);
 
   let ctx;
   try { ctx = new AudioContext({ sampleRate: 16000 }); } catch (_) { ctx = new AudioContext(); }
-  const player = new Audio(url); // fresh element: a media element can feed only one AudioContext
-  const r = { ws: null, ctx, player, src: null, node: null, sink: null, pending: [], pendingLen: 0,
-              chunk: Math.round(ctx.sampleRate / 10), state: "connecting", live: [], final: null };
-  run = r;
-  setRunning(true);
-  status("connecting…");
+  const capture = new Audio(job.url); // muted source: only feeds the stream, never the speakers
+  const r = { job, ws: null, ctx, capture, src: null, node: null, pending: [], pendingLen: 0,
+              chunk: Math.round(ctx.sampleRate / 10) };
+  job.run = r;
 
   const proto = location.protocol === "https:" ? "wss" : "ws";
   const q = new URLSearchParams({
@@ -203,23 +301,36 @@ async function start() {
   const ws = new WebSocket(`${proto}://${location.host}/speech-to-text/ws?${q}`, ["diarai", "key." + key]);
   ws.binaryType = "arraybuffer";
   r.ws = ws;
-
+  ws.onopen = () => jobStatus(job, "authorising…");
   ws.onmessage = (ev) => onMessage(r, JSON.parse(ev.data));
   ws.onclose = (ev) => {
-    if (r.state === "done") return;
-    stopAudio(r);
-    r.state = "done";
-    setRunning(false);
+    if (job.state === "done" || job.state === "failed") return;
+    stopCapture(r);
+    job.state = "failed";
     els.card.classList.remove("busy");
-    if (ev.code === 1008) status(ev.reason || "API key rejected", true);
-    else if (ev.code === 1013) status("server busy, try again shortly", true);
-    else status(`disconnected${ev.reason ? ": " + ev.reason : ` (${ev.code})`}`, true);
-    if (r.live.length) els.tools.hidden = false;
+    let msg = `disconnected${ev.reason ? ": " + ev.reason : ` (${ev.code})`}`;
+    const retry = (ev.code === 1008 || ev.code === 1013) && !job.live.length;
+    if (ev.code === 1008) msg = ev.reason || "API key rejected";
+    else if (ev.code === 1013) msg = "server busy, try again shortly";
+    status(msg, true);
+    job.el.classList.remove("active");
+    if (retry) { // nothing was transcribed: keep it queued and stop, so Start retries it
+      job.state = "queued";
+      jobStatus(job, `${msg} · still queued`, true);
+      job.linesEl.replaceChildren(el("p", "empty muted", "Waiting for its turn."));
+      setRunning(false);
+    } else {
+      job.state = job.live.length ? "done" : "failed";
+      jobStatus(job, msg, true);
+      if (!job.live.length) job.linesEl.replaceChildren(el("p", "empty muted", "Not transcribed."));
+    }
+    showTools(job);
+    next();
   };
-  // audio starts only once the server has accepted the key (READY), not on socket open
+  // capture starts only once the server has accepted the key (READY), not on socket open
   r.begin = async () => {
     try {
-      r.src = ctx.createMediaElementSource(player);
+      r.src = ctx.createMediaElementSource(capture);
       if (ctx.audioWorklet && window.isSecureContext) {
         await ctx.audioWorklet.addModule("/static/capture.js");
         r.node = new AudioWorkletNode(ctx, "capture");
@@ -228,28 +339,26 @@ async function start() {
         r.node = ctx.createScriptProcessor(4096, 1, 1);
         r.node.onaudioprocess = (e) => push(r, new Float32Array(e.inputBuffer.getChannelData(0)));
       }
-      r.sink = ctx.createGain();
-      r.sink.gain.value = 0;
+      const sink = ctx.createGain();
+      sink.gain.value = 0; // keeps the graph pulling audio without anything reaching the speakers
       r.src.connect(r.node);
-      r.node.connect(r.sink).connect(ctx.destination);
-      r.src.connect(ctx.destination); // you hear what is being transcribed
+      r.node.connect(sink).connect(ctx.destination);
       await ctx.resume();
-      player.addEventListener("ended", () => finish(r));
-      await player.play();
-      r.state = "streaming";
+      capture.addEventListener("ended", () => finish(r));
+      await capture.play();
+      job.state = "streaming";
       els.card.classList.remove("busy");
       tick(r);
     } catch (err) {
-      if (r.state === "done") return;
-      status("audio error: " + err.message, true);
+      if (job.state === "done") return;
+      jobStatus(job, "audio error: " + err.message, true);
       ws.close();
     }
   };
-  ws.onopen = () => status("authorising…");
 }
 
 function push(r, f32) {
-  if (r.state !== "streaming") return;
+  if (r.job.state !== "streaming") return;
   r.pending.push(f32);
   r.pendingLen += f32.length;
   if (r.pendingLen >= r.chunk) sendPending(r);
@@ -268,62 +377,79 @@ function sendPending(r) {
   r.ws.send(pcm.buffer);
 }
 function tick(r) {
-  if (r.state !== "streaming") return;
-  const d = r.player.duration || 0;
-  setProgress(d ? r.player.currentTime / d : 0);
-  status(`streaming ${fmt(r.player.currentTime)} / ${fmt(d)}`);
+  if (r.job.state !== "streaming") return;
+  const d = r.capture.duration || 0;
+  setProgress(d ? r.capture.currentTime / d : 0);
+  const t = `sending ${fmt(r.capture.currentTime)} / ${fmt(d)}${r.job.heard ? "" : " · waiting for first text"}`;
+  jobStatus(r.job, t);
+  status(`${t} · ${r.job.name}`);
   requestAnimationFrame(() => tick(r));
 }
-function stopAudio(r) {
-  r.player.pause();
+function stopCapture(r) {
+  r.capture.pause();
   try { r.src && r.src.disconnect(); r.node && r.node.disconnect(); } catch (_) {}
   if (r.ctx && r.ctx.state !== "closed") r.ctx.close().catch(() => {});
 }
 function finish(r) {
-  if (r.state !== "streaming") return;
+  if (r.job.state !== "streaming") return;
   sendPending(r);
-  r.state = "finishing";
-  stopAudio(r);
+  r.job.state = "finishing";
+  stopCapture(r);
   setProgress(1);
   els.card.classList.add("busy");
-  status(els.final.checked ? "finishing: re-processing the whole recording…" : "finishing…");
+  const t = els.final.checked ? "finishing: re-processing the whole recording…" : "finishing…";
+  jobStatus(r.job, t);
+  status(`${t} · ${r.job.name}`);
   if (r.ws.readyState === WebSocket.OPEN) r.ws.send(JSON.stringify({ type: "end" }));
+}
+// audible playback of this job, started by its first transcript text
+function hear(job) {
+  if (job.heard) return;
+  job.heard = true;
+  const p = els.player;
+  p.src = job.url;
+  p.currentTime = 0;
+  p.play().catch(() => jobStatus(job, "text is streaming; your browser blocked playback"));
 }
 
 function onMessage(r, m) {
-  const d = m.data || {};
+  const job = r.job, d = m.data || {};
   if (m.type === "data") {
-    r.live.push({ speaker_id: d.speaker_id, start_time_seconds: d.start_time_seconds,
-                  end_time_seconds: d.end_time_seconds, transcript: d.transcript });
-    if (els.lines.querySelector(".empty")) els.lines.replaceChildren();
-    addLine(d);
+    job.live.push({ speaker_id: d.speaker_id, start_time_seconds: d.start_time_seconds,
+                    end_time_seconds: d.end_time_seconds, transcript: d.transcript });
+    addLine(job, d);
+    showTools(job);
+    hear(job);
   } else if (m.type === "partial") {
-    if (els.lines.querySelector(".empty")) els.lines.replaceChildren();
-    showPartial(d.start_time_seconds, d.transcript);
+    showPartial(job, d.start_time_seconds, d.transcript);
+    if (d.transcript) hear(job);
   } else if (m.type === "final") {
-    r.final = d;
-    showFinal(d);
+    job.final = d;
+    showFinal(job);
   } else if (m.type === "events" && d.signal_type === "READY") {
-    if (r.state === "connecting") r.begin();
+    if (job.state === "connecting") r.begin();
   } else if (m.type === "events" && d.signal_type === "END_OF_STREAM") {
-    r.state = "done";
-    showPartial(0, "");
-    setRunning(false);
+    job.state = "done";
+    showPartial(job, 0, "");
     els.card.classList.remove("busy");
-    els.tools.hidden = !entries().length;
-    const lang = r.final ? r.final.language_code : "";
-    status(`done${lang ? " · " + lang : ""}`);
+    job.el.classList.remove("active");
+    showTools(job);
+    const lang = job.final ? job.final.language_code : "";
+    jobStatus(job, `done${lang ? " · " + lang : ""}${job.dur ? " · " + fmt(job.dur) : ""}`);
     r.ws.close();
+    next();
   } else if (m.type === "error") {
-    status(d.error || "server error", true);
+    jobStatus(job, d.error || "server error", true);
   }
 }
 
 els.go.addEventListener("click", () => {
-  if (run && (run.state === "streaming" || run.state === "connecting")) {
-    if (run.state === "connecting") { run.ws.close(); return; }
-    finish(run);
-  } else if (!run || run.state === "done") {
-    start();
-  }
+  if (!running) { startQueue(); return; }
+  // Stop: end the current file (its text so far is kept) and leave the rest queued
+  setRunning(false);
+  els.player.pause();
+  const r = current && current.run;
+  if (!r) return;
+  if (current.state === "connecting") { r.ws.close(); return; }
+  finish(r);
 });

@@ -18,7 +18,11 @@ body { font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans"
 main { max-width: 760px; margin: 0 auto; padding: 40px 16px 80px; }
 button, input, select { font: inherit; color: inherit; }
 
-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px; }
+header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 28px; }
+.hright { display: flex; align-items: baseline; gap: 16px; min-width: 0; }
+.hright .status { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hright .link { white-space: nowrap; }
+.small { font-size: 13px; }
 h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
 h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin: 0; color: var(--muted); }
 .status { font-family: var(--mono); font-size: 12px; color: var(--muted); }
@@ -62,9 +66,17 @@ input:focus, select:focus, .card:focus-visible { border-color: var(--fg); }
 .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
 .controls .btn { margin-left: auto; }
 
-.thead { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+.ttitle { margin-bottom: 14px; }
+.jobs { display: flex; flex-direction: column; gap: 28px; }
+.job { border-top: 1px solid var(--line); padding-top: 14px; }
+.job.active { border-top-color: var(--fg); }
+.thead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+.jhead { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.jname { font-size: 14px; font-weight: 600; margin: 0; overflow-wrap: anywhere; }
+.jstatus { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.jstatus.err { color: var(--fg); font-weight: 600; }
 .tools { display: flex; gap: 14px; }
-.lines { display: flex; flex-direction: column; gap: 14px; min-height: 120px; }
+.lines { display: flex; flex-direction: column; gap: 14px; }
 .empty { font-size: 14px; }
 .line { display: grid; grid-template-columns: 92px 1fr; gap: 12px; animation: in .25s ease-out; }
 .meta { display: flex; flex-direction: column; gap: 2px; padding-top: 2px; }
@@ -86,5 +98,7 @@ input:focus, select:focus, .card:focus-visible { border-color: var(--fg); }
   .meta { flex-direction: row; gap: 8px; align-items: center; }
   .controls .btn { margin-left: 0; width: 100%; }
   .filemeta { flex-direction: column; gap: 2px; }
+  header { flex-direction: column; gap: 6px; }
+  .thead { flex-direction: column; gap: 6px; }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from diarai import config
@@ -74,12 +74,30 @@ async def _security_headers(request: Request, call_next):
     if request.url.path == "/" or request.url.path.startswith("/static"):
         resp.headers["Content-Security-Policy"] = _CSP
         resp.headers["X-Frame-Options"] = "DENY"
+        resp.headers.setdefault("Cache-Control", "no-cache")  # revalidate (ETag) instead of a stale CDN copy
     return resp
+
+
+def _index_html() -> str:
+    """index.html with the static asset URLs tagged by a content hash, so CDN caches (Cloudflare keeps .js/.css
+    for hours) never serve an old app.js to a new page."""
+    import hashlib
+
+    h = hashlib.sha256()
+    for name in sorted(os.listdir(STATIC)):
+        with open(os.path.join(STATIC, name), "rb") as f:
+            h.update(name.encode() + f.read())
+    v = h.hexdigest()[:10]
+    with open(os.path.join(STATIC, "index.html"), encoding="utf-8") as f:
+        html = f.read()
+    for asset in ("app.js", "style.css"):
+        html = html.replace(f"/static/{asset}\"", f"/static/{asset}?v={v}\"")
+    return html
 
 
 @app.api_route("/", methods=["GET", "HEAD"], include_in_schema=False)
 async def index():
-    return FileResponse(os.path.join(STATIC, "index.html"), headers={"Cache-Control": "no-cache"})
+    return HTMLResponse(_index_html(), headers={"Cache-Control": "no-cache"})
 
 
 def _error(status: int, message: str, code: str):
