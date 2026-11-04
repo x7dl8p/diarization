@@ -2,7 +2,7 @@
 
 diarai is a self-hosted speech-to-text service with speaker diarization (who said what). Its API follows Sarvam AI's speech-to-text response shapes. A service that already parses Sarvam output can usually switch by changing the URL and the key.
 
-Base URL: `https://sarvam.androcoders.net`. In the office LAN it is `http://192.168.0.100:8090`.
+Base URL: `https://sarvam.androcoders.net`. In the office LAN it is `http://192.168.0.100:8085`.
 
 ## Authentication
 
@@ -121,7 +121,7 @@ zdial uses diarai for **post-call transcription**:
 Configuration, in the backend env (Infisical `staging` / `prod`, folder `/backend`):
 
 ```
-DIARAI_URL=http://192.168.0.100:8090   # LAN: no Cloudflare 100 s limit
+DIARAI_URL=http://192.168.0.100:8085   # LAN: no Cloudflare 100 s limit
 DIARAI_API_KEY=<key from the diarai host>
 ```
 
@@ -137,10 +137,16 @@ See `docs/zdial-benchmark.md` for 5 real zdial calls. For each, it compares the 
 
 ```
 client ─HTTPS─> Cloudflare (tunnel, *.androcoders.net) ─> andro 192.168.0.200: caddy container
-  └─ sarvam.androcoders.net → 192.168.0.100:8090 / 192.168.1.24:8090 (desktop-514csmm)
-       └─ port forward over Tailscale → GPU host running `python -m diarai serve` on :8090
+  └─ sarvam.androcoders.net → 192.168.0.100:8085 / 192.168.1.24:8085
+       └─ desktop-514csmm: pm2 app "diarai" (python -m diarai serve, port 8085, RTX 2060)
 ```
 
+* **Host:** desktop-514csmm runs diarai from `C:\Users\ali\diarai`, under pm2, using `deploy/diarai.ecosystem.config.js`. Its API key is in `C:\Users\ali\diarai\secrets\api_key.txt`.
+* **Measured speed** on the RTX 2060: a 365 s call took 213 s, about 1.7× faster than real time.
+* **Port 8085:** the firewall already allows it (`ocr-http-8085`). The OCR service used the same port, so OCR and diarai can't run at the same time:
+  * Back to OCR: `pm2 stop diarai && pm2 start ocr-api ocr-llama`.
+  * Back to diarai: `pm2 stop ocr-api ocr-llama && pm2 start diarai`.
+  * sts (`s2s-*`) is stopped too, to free the GPU memory.
 * **Caddy block:** in `/home/andro/deployments/caddy/Caddyfile-template` on andro.
 * **No `basic_auth` in Caddy:** diarai checks its own key, and a second login prompt would break API clients.
-* **Requests that run long:** Cloudflare closes a request that doesn't respond within 100 s (HTTP 524). For longer recordings, call the LAN URL from inside the office network. zdial's backend does this when `DIARAI_URL=http://192.168.0.100:8090`.
+* **Requests that run long:** Cloudflare closes a request that doesn't respond within 100 s (HTTP 524). For longer recordings, call the LAN URL from inside the office network. zdial's backend does this when `DIARAI_URL=http://192.168.0.100:8085`.

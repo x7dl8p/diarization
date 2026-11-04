@@ -191,10 +191,10 @@ The page has no dependencies and a strict CSP. The key is sent as a WebSocket su
 Production layout:
 ```
 https://sarvam.androcoders.net ─ Cloudflare tunnel ─ andro (Caddy, Caddyfile-template)
-  └─ 192.168.0.100:8090 (desktop-514csmm, port forward) ─ Tailscale ─ GPU host :8090
+  └─ 192.168.0.100:8085 ─ desktop-514csmm: pm2 app "diarai" (RTX 2060)
 ```
 
-On the GPU host, run diarai as a service, adjusting `--host`/`--port` in the unit:
+On Windows, run it under pm2 with `deploy/diarai.ecosystem.config.js` (see INTEGRATION.md). On Linux, run it as a systemd service, adjusting `--host`/`--port` in the unit:
 ```bash
 cp deploy/diarai.service /etc/systemd/system/ && systemctl daemon-reload && systemctl enable --now diarai
 journalctl -u diarai -f
