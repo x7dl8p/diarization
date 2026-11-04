@@ -122,18 +122,22 @@ async def speech_to_text(file: UploadFile = File(...), language_code: str = Form
     from diarai.pipeline import DiarAI
 
     limit = config.MAX_UPLOAD_MB * 1024 * 1024
-    with tempfile.NamedTemporaryFile(suffix=os.path.splitext(file.filename or "")[1]) as tmp:
-        size = 0
-        while chunk := await file.read(1 << 20):
-            size += len(chunk)
-            if size > limit:
-                raise HTTPException(413, f"file larger than {config.MAX_UPLOAD_MB} MB")
-            tmp.write(chunk)
-        tmp.flush()
+    # delete=False + explicit cleanup: Windows cannot reopen a NamedTemporaryFile that is still open
+    tmp = tempfile.NamedTemporaryFile(suffix=os.path.splitext(file.filename or "")[1], delete=False)
+    try:
+        with tmp:
+            size = 0
+            while chunk := await file.read(1 << 20):
+                size += len(chunk)
+                if size > limit:
+                    raise HTTPException(413, f"file larger than {config.MAX_UPLOAD_MB} MB")
+                tmp.write(chunk)
         try:
             wav = await asyncio.to_thread(load_audio, tmp.name)
         except Exception:
             raise HTTPException(400, "could not decode the audio file")
+    finally:
+        os.unlink(tmp.name)
     if len(wav) < 1600:
         raise HTTPException(400, "audio is empty or shorter than 0.1 s")
     if num_speakers is not None and not 1 <= num_speakers <= 20:

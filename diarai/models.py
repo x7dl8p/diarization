@@ -30,7 +30,12 @@ STREAM, PARTIAL, BATCH = 0, 1, 2
 
 
 def _preload_cudnn():
-    """CTranslate2 4.4 dlopen()s cuDNN 8 by soname; make the copy bundled with torch visible to it."""
+    """CTranslate2 4.4 loads cuDNN 8 by name; make the copy bundled with torch visible to it."""
+    torch_lib = os.path.join(os.path.dirname(torch.__file__), "lib")
+    if os.name == "nt":  # Windows: cudnn*64_8.dll are found through the DLL search path
+        os.add_dll_directory(torch_lib)
+        os.environ["PATH"] = torch_lib + os.pathsep + os.environ.get("PATH", "")
+        return
     for lib in ("libcudnn_ops_infer.so.8", "libcudnn_cnn_infer.so.8"):
         for path in glob.glob(os.path.join(os.path.dirname(torch.__file__), "lib", lib)):
             ctypes.CDLL(path, mode=ctypes.RTLD_GLOBAL)
