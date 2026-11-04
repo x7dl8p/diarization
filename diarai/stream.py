@@ -11,6 +11,7 @@ and at the end of the session the whole recording can be re-processed by the off
 (DiariZen + per-turn ASR) for the most accurate final transcript.
 """
 
+import logging
 import time
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
@@ -20,6 +21,8 @@ import numpy as np
 from diarai.config import LANGUAGES, SAMPLE_RATE
 from diarai.models import PARTIAL, STREAM, BATCH, Models
 from diarai.pipeline import DiarAI, Result, Turn, Utterance, dedupe_crosstalk, transcribe_unit
+
+log = logging.getLogger("diarai")
 
 FRAME = 512  # Silero VAD window at 16 kHz (32 ms)
 HOP = FRAME / SAMPLE_RATE
@@ -238,12 +241,16 @@ class StreamSession:
     """State of one live stream. `feed`/`flush` are cheap (CPU); `process`, `partial` and `finalize` use the
     GPU and are called from worker threads (they serialise on models.gpu)."""
 
-    def __init__(self, models: Models, language: Optional[str] = None, beam_size: int = 5,
+    def __init__(self, models: Models, language: Optional[str] = None, beam_size: int = 1,
                  end_silence: float = 0.6, max_utterance: float = 10.0, vad_threshold: float = 0.5,
-                 speaker_threshold: float = 0.3, window: float = 16.0, max_seconds: float = 4 * 3600):
+                 speaker_threshold: float = 0.3, window: float = 16.0, max_seconds: float = 4 * 3600,
+                 word_timestamps: bool = False):
+        """Live defaults favour keeping up with the audio: greedy decoding and no word alignment roughly
+        halve decode time. The whole-session final pass (finalize) still uses the offline settings."""
         self.models = models
         self.language, self.locked = language, language is not None
         self.beam_size = beam_size
+        self.word_timestamps = word_timestamps
         self.vad = StreamingVAD()
         self.ep = Endpointer(threshold=vad_threshold, neg_threshold=max(0.05, vad_threshold - 0.15),
                              end_silence=end_silence, max_utterance=max_utterance)
@@ -291,9 +298,13 @@ class StreamSession:
         ws = max(0.0, b - self.window)
         win = self.audio[ws, b]
         sr = SAMPLE_RATE
+        tq = time.perf_counter()
         with self.models.gpu(priority):
+            t0 = time.perf_counter()
             lang = self._language(self.audio[a, b])
+            t1 = time.perf_counter()
             y, fd = self.models.segment(win)
+            t2 = time.perf_counter()
             t = ws + (np.arange(len(y)) + 0.5) * fd
             new = t >= a
             local = [k for k in range(y.shape[1]) if y[new, k].sum() * fd >= 0.2]
@@ -335,11 +346,15 @@ class StreamSession:
                 self.timeline.mark(g, a, b)
 
             # 4) ASR per speaker unit, never reaching outside the segment (no duplicated words)
+            t3 = time.perf_counter()
             units = []
             for spk, s_, e_ in DiarAI.speaker_segments(turns):
                 ua, ub = max(a, s_ - 0.2), min(b, e_ + 0.2)
                 units.append((e_ - s_, transcribe_unit(self.models, self.audio[ua, ub], lang, ua, spk,
-                                                       self.beam_size)))
+                                                       self.beam_size, word_timestamps=self.word_timestamps)))
+            t4 = time.perf_counter()
+        log.info("live segment %.1f-%.1fs (%.1fs): wait %.2f lid %.2f eend %.2f speakers %.2f asr %.2f (%d units)",
+                 a, b, b - a, t0 - tq, t1 - t0, t2 - t1, t3 - t2, t4 - t3, len(units))
         utts = DiarAI.group(dedupe_crosstalk(units))
         self.utterances += utts
         return utts

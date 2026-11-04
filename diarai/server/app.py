@@ -176,12 +176,13 @@ async def speech_to_text_ws(ws: WebSocket):
     try:
         sample_rate = int(q.get("sample_rate", config.SAMPLE_RATE))
         codec = q.get("input_audio_codec", "pcm_s16le")
-        beam = int(q.get("beam_size", 5))
+        beam = int(q.get("beam_size", 1))
         num_speakers = int(q["num_speakers"]) if q.get("num_speakers") else None
         session = StreamSession(
             State.models, language=parse_lang(q.get("language-code") or q.get("language_code")),
             beam_size=max(1, min(beam, 10)), vad_threshold=0.35 if _bool(q.get("high_vad_sensitivity"), False) else 0.5,
-            end_silence=float(q.get("end_silence", 0.6)), max_utterance=float(q.get("max_utterance", 10.0)))
+            end_silence=float(q.get("end_silence", 0.6)), max_utterance=float(q.get("max_utterance", 10.0)),
+            word_timestamps=_bool(q.get("word_timestamps"), False))
     except (ValueError, TypeError) as e:
         return await refuse(1003, f"bad query parameter: {e}"[:120])
     vad_signals = _bool(q.get("vad_signals"), False)
@@ -193,7 +194,8 @@ async def speech_to_text_ws(ws: WebSocket):
     rid = uuid.uuid4().hex
     ids = SpeakerIds()
     segments: asyncio.Queue = asyncio.Queue()
-    busy = {"n": 0}
+    busy = {"n": 0, "lag": 0.0}
+    closed = {"v": False}  # client gone: queued segments are dropped  # lag: how late the last finished segment was delivered (s)
     send_lock = asyncio.Lock()
 
     async def send(kind: str, data: dict):
@@ -201,7 +203,7 @@ async def speech_to_text_ws(ws: WebSocket):
             await ws.send_text(json.dumps({"type": kind, "data": data}, ensure_ascii=False))
 
     def data_msg(u, latency: float) -> dict:
-        return {"request_id": rid, "transcript": u.text, "timestamps": word_timestamps(u.words),
+        return {"request_id": rid, "transcript": u.text, "timestamps": word_timestamps(u.words) if session.word_timestamps else None,
                 "diarized_transcript": {"entries": [entry(u.text, u.start, u.end, ids(u.speaker))]},
                 "speaker_id": ids(u.speaker), "start_time_seconds": round(u.start, 2),
                 "end_time_seconds": round(u.end, 2), "language_code": lang_code(session.language),
@@ -211,6 +213,9 @@ async def speech_to_text_ws(ws: WebSocket):
     async def worker():
         while True:
             seg, t_seen = await segments.get()
+            if seg is not None and closed["v"]:
+                segments.task_done()
+                continue
             if seg is None:
                 segments.task_done()
                 return
@@ -218,6 +223,7 @@ async def speech_to_text_ws(ws: WebSocket):
             try:
                 for u in await asyncio.to_thread(session.process, seg):
                     await send("data", data_msg(u, time.perf_counter() - t_seen))
+                busy["lag"] = time.perf_counter() - t_seen
             except Exception as e:  # keep the stream alive; report the failed segment
                 log.exception("segment failed")
                 await send("error", {"error": f"segment {seg.start:.2f}-{seg.end:.2f}s failed: {e}", "code": "processing_error"})
@@ -229,8 +235,8 @@ async def speech_to_text_ws(ws: WebSocket):
         last = None
         while True:
             await asyncio.sleep(1.5)
-            if busy["n"] or not segments.empty():
-                continue  # finals first; partials only when this stream is idle
+            if busy["n"] or not segments.empty() or busy["lag"] > 3.0:
+                continue  # finals first: captions only when this stream is idle and keeping up
             p = await asyncio.to_thread(session.partial)
             if p and p != last:
                 last = p
@@ -303,6 +309,7 @@ async def speech_to_text_ws(ws: WebSocket):
         pass
     finally:
         State.streams -= 1
+        closed["v"] = True
         segments.put_nowait((None, 0.0))
         for t in tasks[1:]:
             t.cancel()
