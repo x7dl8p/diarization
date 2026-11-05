@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="/static/style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='2' y='2' width='12' height='12' rx='3' fill='none' stroke='%2327272a' stroke-width='2'/%3E%3C/svg%3E">
 <script src="/static/app.js" defer></script>
+<script src="/static/bench.js" defer></script>
 </head>
 <body>
 <main>
@@ -15,9 +16,13 @@
     <div class="hright">
       <span id="status" class="status">idle</span>
       <button id="apiprompt" class="link" type="button" title="Copies a short description of this API for a developer or an AI assistant. The key is not included.">copy API prompt</button>
+      <button id="door" class="icon" type="button" title="zdial benchmark: Sarvam vs diarai on real calls" aria-label="Open the zdial benchmark">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5V21M3 21h18M14.5 12.5v.01"/></svg>
+      </button>
     </div>
   </header>
 
+  <div id="home">
   <section class="field">
     <label for="key">API key</label>
     <div class="row">
@@ -58,6 +63,21 @@
     <div id="jobs" class="jobs">
       <p class="empty muted">Each file's text appears here. You hear the audio once its first text comes back.</p>
     </div>
+  </section>
+  </div>
+
+  <section id="bench" class="bench" hidden>
+    <div class="bhead">
+      <button id="benchback" class="link" type="button">&larr; back</button>
+      <h2>zdial benchmark</h2>
+    </div>
+    <p class="muted small bintro">Real zdial calls. For each one, zdial's own AI analysis runs on the Sarvam transcript zdial stored and on the
+      diarai transcript of the same recording. A judge model then says whether a supervisor would reach the same conclusion from both.
+      <b>Noise</b> is the same check with the Sarvam transcript analysed twice, so the AI's own run-to-run variation is visible.</p>
+    <p id="bneedkey" class="muted small" hidden>Paste the API key on the main page first (&larr; back).</p>
+    <div id="bstats" class="stats"></div>
+    <div id="bfilter" class="filters" role="group" aria-label="Filter calls"></div>
+    <div id="blist" class="blist"></div>
   </section>
 </main>
 <audio id="player" preload="auto" hidden></audio>

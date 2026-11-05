@@ -62,6 +62,7 @@ The response is the same as Sarvam's batch output:
 
 * **Speaker ids:** `"0"`, `"1"`, ... in order of first appearance. diarai does not know which speaker is the agent.
 * **Synchronous:** there is no job and no polling; the call returns when the transcript is done. Budget about 0.5–1.5× the audio length on the current GPU, and set a client timeout of at least 10 minutes.
+* **Node.js:** the built-in `fetch` aborts when response headers take over 300 s (undici `headersTimeout`), whatever your own timeout says, and diarai sends no headers until the transcript is done. For recordings that can take longer, use the `http` module with your own timeout, or pass an undici `Agent({ headersTimeout: 0, bodyTimeout: 0 })` as `dispatcher`.
 
 **Errors:** `{"error": {"message", "code"}}`
 

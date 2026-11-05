@@ -90,7 +90,7 @@ def _index_html() -> str:
     v = h.hexdigest()[:10]
     with open(os.path.join(STATIC, "index.html"), encoding="utf-8") as f:
         html = f.read()
-    for asset in ("app.js", "style.css"):
+    for asset in ("app.js", "bench.js", "style.css"):
         html = html.replace(f"/static/{asset}\"", f"/static/{asset}?v={v}\"")
     return html
 
@@ -122,6 +122,11 @@ async def require_key(request: Request):
     ok = await asyncio.to_thread(State.auth.check, extract_key(request.headers), client)
     if not ok:
         raise HTTPException(401, "invalid or missing API key (Api-Subscription-Key header, Bearer or Basic auth)")
+
+
+from diarai.server import bench  # noqa: E402  (needs require_key, defined above)
+
+app.include_router(bench.router, dependencies=[Depends(require_key)])
 
 
 @app.get("/health")
