@@ -19,6 +19,14 @@
   };
   const pct = (a, b) => (b ? Math.round((100 * a) / b) + "%" : "–");
   const num = (x) => typeof x === "number" && isFinite(x);
+  const secs = (x) => (num(x) ? (x < 90 ? `${Math.round(x * 10) / 10} s` : fmt(x)) : "–");
+  const median = (a) => {
+    const b = a.filter(num).sort((x, y) => x - y);
+    return b.length ? (b.length % 2 ? b[(b.length - 1) / 2] : (b[b.length / 2 - 1] + b[b.length / 2]) / 2) : null;
+  };
+  // hang-up -> analysis ready. Sarvam: zdial's own timestamps (live transcripts are ready at hang-up, so this is
+  // the analysis). diarai: its transcription time + the same analysis time (estimate, marked with ≈).
+  const diaraiReady = (r) => (num(r.diarai_seconds) ? r.diarai_seconds + (num(r.sarvam_ready_seconds) && r.sarvam_mode === "live" ? r.sarvam_ready_seconds : 0) : null);
 
   async function api(path, asBlob = false) {
     const r = await fetch(path, { headers: { "Api-Subscription-Key": key() }, cache: "no-store" });
@@ -57,6 +65,16 @@
   }
 
   // ---------------------------------------------------------------- stats
+  function speedText(list) {
+    const a = list.filter((r) => num(r.diarai_seconds) && num(r.duration) && r.duration > 0);
+    const audio = a.reduce((x, r) => x + r.duration, 0), took = a.reduce((x, r) => x + r.diarai_seconds, 0);
+    return audio ? `${(took / audio).toFixed(2)}×` : "–";
+  }
+  function totalText(list) {
+    const a = list.filter((r) => num(r.diarai_seconds) && num(r.duration));
+    const m = (x) => Math.round(x / 60);
+    return a.length ? `${m(a.reduce((x, r) => x + r.diarai_seconds, 0))} min for ${m(a.reduce((x, r) => x + r.duration, 0))} min of audio` : "";
+  }
   function tally(list, field) {
     const t = { same: 0, minor: 0, different: 0 };
     for (const r of list) if (r[field] in t) t[r[field]]++;
@@ -103,6 +121,10 @@
       stat(deltas.length ? (deltas.reduce((a, b) => a + b, 0) / deltas.length).toFixed(1) : "–", "mean |score difference| /10",
         `${deltas.length} calls with both scores`),
       stat(pct(st[0], st[1]), "script steps graded the same", `${st[0]}/${st[1]} · noise ${pct(stn[0], stn[1])}`),
+      stat(`${secs(median(ok.map((r) => r.sarvam_ready_seconds)))} → ≈${secs(median(ok.map(diaraiReady)))}`,
+        "hang-up to analysis ready, median: Sarvam → diarai",
+        `Sarvam transcribed live in ${ok.filter((r) => r.sarvam_mode === "live").length}/${ok.length} calls`),
+      stat(speedText(ok), "diarai transcription time / call length", totalText(ok)),
     );
 
     filterEl.replaceChildren();
@@ -127,7 +149,8 @@
       const verdict = r.error ? "failed" : r.verdict || "pending";
       const mid = el("div");
       mid.append(el("div", "id", r.id.slice(0, 8)),
-        el("div", "sub", r.error ? r.error : `${r.direction || ""} · ${fmt(r.duration)} · ${r.speakers ?? "?"} speakers · noise ${r.noise || "–"}`));
+        el("div", "sub", r.error ? r.error : `${r.direction || ""} · ${fmt(r.duration)} · ${r.speakers ?? "?"} speakers · noise ${r.noise || "–"}`),
+        r.error ? "" : el("div", "sub", `ready after hang-up: Sarvam ${secs(r.sarvam_ready_seconds)}${r.sarvam_mode === "live" ? " (live)" : ""} · diarai ≈${secs(diaraiReady(r))} (transcribing ${secs(r.diarai_seconds)})`));
       const sc = r.script[0] || r.script[1]
         ? `${r.script[0] || "none"} ${num(r.score[0]) ? r.score[0] : ""} → ${r.script[1] || "none"} ${num(r.score[1]) ? r.score[1] : ""}`
         : `${(r.sentiment[0] || "").toLowerCase()} → ${(r.sentiment[1] || "").toLowerCase()}`;
@@ -188,8 +211,15 @@
     if (d.error) { box.append(el("p", "muted small", d.error)); return; }
     const head = el("p", "small");
     head.append(el("b", null, `Verdict: ${d.verdict ? d.verdict.verdict : "–"}`),
-      document.createTextNode(` · noise check: ${d.noise ? d.noise.verdict : "–"} · ${fmt(d.duration)} call, diarai took ${d.diarai_seconds ?? "?"} s · ${d.speakers ?? "?"} speakers`));
+      document.createTextNode(` · noise check: ${d.noise ? d.noise.verdict : "–"} · ${fmt(d.duration)} call · ${d.speakers ?? "?"} speakers`));
     box.append(head);
+    const timing = el("p", "small muted");
+    const ratio = num(d.diarai_seconds) && d.duration ? ` (${(d.diarai_seconds / d.duration).toFixed(2)}× the call)` : "";
+    timing.textContent = (d.sarvam_mode === "live"
+      ? `Sarvam: transcribed live during the call, so the transcript was ready at hang-up; zdial's analysis was stored ${secs(d.sarvam_ready_seconds)} after.`
+      : `Sarvam: transcribed after the call; zdial's analysis was stored ${secs(d.sarvam_ready_seconds)} after hang-up.`)
+      + ` diarai: transcribed the recording in ${secs(d.diarai_seconds)}${ratio}, so with the same analysis the result would be ready about ${secs(diaraiReady(d))} after hang-up.`;
+    box.append(timing);
     const diffs = (d.verdict && d.verdict.differences) || [];
     if (diffs.length) {
       const ul = el("ul", "diffs");

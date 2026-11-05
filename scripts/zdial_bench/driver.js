@@ -180,7 +180,9 @@ async function main() {
       const { rows } = await db.query(
         `select c."callId" as "callId", c."durationSeconds" as "durationSeconds", c."destinationNumber" as "destinationNumber",
                 c.status, c.direction, c."callScriptId" as "callScriptId", c."recordingKey" as "recordingKey",
-                p.transcript, p.summary, p.sentiment, p.script_key, p.script_score, p.updated_at
+                p.transcript, p.summary, p.sentiment, p.script_key, p.script_score, p.updated_at,
+                extract(epoch from p.updated_at - p.created_at)::float as "sarvamReady",
+                (p.transcript ~ '^\[\d\d:\d\d\] \[Speaker') as "sarvamBatch"
            from post_call_analysis p join call_sessions c on c."callId"::text = p.call_id where p.call_id = $1`, [id]);
       const call = rows[0];
       if (!call) throw new Error("call not found");
@@ -219,6 +221,8 @@ async function main() {
             stored: { summary: call.summary, sentiment: call.sentiment, scriptKey: call.script_key, scriptScore: call.script_score },
             transcript_sarvam: call.transcript, transcript_diarai: fmt.text, speakers: fmt.speakers,
             diarai_language: tr.language_code, diarai_seconds: Math.round(wall),
+            // hang-up -> zdial's stored analysis; for live transcripts that is the analysis alone
+            sarvam_mode: call.sarvamBatch ? "batch" : "live", sarvam_ready_seconds: Math.round(call.sarvamReady * 10) / 10,
             audio_seconds: (tr.metrics || {}).audio_duration,
             analysis_sarvam: A, analysis_sarvam_repeat: A2, analysis_diarai: B,
             verdict, noise, steps: stepAgreement(A, B), steps_noise: stepAgreement(A, A2),

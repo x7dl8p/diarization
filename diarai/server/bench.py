@@ -62,7 +62,8 @@ def _row(d: dict) -> dict:
         "sentiment": [a.get("sentiment"), b.get("sentiment")],
         "steps": d.get("steps"), "steps_noise": d.get("steps_noise"),
         "speakers": d.get("speakers"),
-        "diarai_seconds": d.get("diarai_seconds"),
+        "diarai_seconds": d.get("diarai_seconds"), "audio_seconds": d.get("audio_seconds"),
+        "sarvam_mode": d.get("sarvam_mode"), "sarvam_ready_seconds": d.get("sarvam_ready_seconds"),
     }
 
 
