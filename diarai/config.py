@@ -21,6 +21,7 @@ _load_dotenv()
 
 MODELS_DIR = Path(os.environ.get("DIARAI_MODELS_DIR", ROOT / "models"))
 BENCH_DIR = Path(os.environ.get("DIARAI_BENCH_DIR", ROOT / "bench"))  # zdial comparison results + audio
+MAYA_URL = os.environ.get("DIARAI_MAYA_URL", "http://127.0.0.1:8086")  # maya-transcribe service (diarai/maya_server.py)
 DEVICE = os.environ.get("DIARAI_DEVICE", "cuda")
 COMPUTE_TYPE = os.environ.get("DIARAI_COMPUTE_TYPE", "int8_float16")
 

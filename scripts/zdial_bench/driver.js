@@ -11,7 +11,12 @@
 //   3. judge(A, B) = does diarai change the conclusion?   judge(A, A2) = how much it changes with no transcript change
 //   4. PUT /bench/calls/<id> with the audio and everything above; PUT /bench/status for live progress
 //
-// env: the zdial backend env (DB_*, S3_*, AI_GATEWAY_API_KEY, DIARAI_URL, DIARAI_API_KEY) + BENCH_N, BENCH_INBOUND
+// BENCH_MODE=maya: a second pass over the same sample. Each recording is transcribed by diarai with model=maya
+// (same diarization, maya-transcribe for the text), analysed (C) and judged against the stored A; the results are
+// merged into the call's entry (PATCH) and progress goes to the "maya" run status.
+//
+// env: the zdial backend env (DB_*, S3_*, AI_GATEWAY_API_KEY, DIARAI_URL, DIARAI_API_KEY) + BENCH_N, BENCH_INBOUND,
+//      BENCH_MODE (diarai | maya)
 const R = require("module").createRequire("/repo/backend/dist/src/main.js");
 const { Client } = R("pg");
 const { S3Client, GetObjectCommand } = R("@aws-sdk/client-s3");
@@ -21,6 +26,7 @@ const { AiService } = R("./common/modules/ai/ai.service.js");
 
 const N = Number(process.env.BENCH_N || 100);
 const N_IN = Number(process.env.BENCH_INBOUND || 30);
+const MODE = process.env.BENCH_MODE || "diarai";
 const DIARAI = String(process.env.DIARAI_URL || "").replace(/\/+$/, "");
 const KEY = process.env.DIARAI_API_KEY || "";
 if (!DIARAI || !KEY) throw new Error("DIARAI_URL / DIARAI_API_KEY missing from the env");
@@ -31,6 +37,10 @@ const ai = new AiService({ get: (k) => (k === "aiGateway.apiKey" ? process.env.A
 const postCall = Object.create(PostCallService.prototype);
 postCall.logger = { log() {}, warn() {}, error() {}, debug() {}, verbose() {} };
 postCall.aiService = ai;
+// newer zdial reads the analysis model from its settings table; pin the model the first run used, so every
+// analysis in the benchmark comes from the same model whatever zdial is configured with today
+const ANALYSIS_MODEL = process.env.BENCH_ANALYSIS_MODEL || "google/gemini-3.5-flash-lite";
+postCall.settingsService = { getAnalysisModel: async () => ANALYSIS_MODEL };
 
 async function analyse(call, transcript, scripts, assigned) {
   for (let i = 0; ; i++) {
@@ -63,7 +73,8 @@ and small score differences (within 1.5 points). Report:
   "different" if the conclusion or the required action differs.
 - differences: each concrete factual difference, briefly (empty when none).`;
   for (let i = 0; ; i++) {
-    try { return await ai.generateObject({ prompt, schema: verdictSchema }); }
+    // usage: newer AiService requires the context; recording it then fails harmlessly (no event bus here)
+    try { return await ai.generateObject({ prompt, schema: verdictSchema, model: ANALYSIS_MODEL, usage: { feature: "diarai_bench_judge" } }); }
     catch (e) { if (i >= 2) throw e; await new Promise((r) => setTimeout(r, 5000 * (i + 1))); }
   }
 }
@@ -97,9 +108,10 @@ async function diarai(path, init = {}) {
   if (!res.ok) throw new Error(`diarai ${path} HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
   return res.json();
 }
-async function transcribe(audio, name) {
+async function transcribe(audio, name, model = "diarai") {
   const form = new FormData();
   form.append("file", new Blob([audio]), name);
+  form.append("model", model);
   form.append("language_code", "hi-IN");
   form.append("with_timestamps", "false");
   form.append("with_diarization", "true");
@@ -132,7 +144,7 @@ async function upload(id, meta, audio, name) {
   return diarai(`/bench/calls/${id}`, { method: "PUT", body: form });
 }
 const status = { state: "starting", total: 0, done: 0, failed: 0, ids: [], errors: [], started: new Date().toISOString() };
-const putStatus = () => diarai("/bench/status", { method: "PUT", headers: { "Content-Type": "application/json" },
+const putStatus = () => diarai(MODE === "diarai" ? "/bench/status" : `/bench/status?run=${MODE}`, { method: "PUT", headers: { "Content-Type": "application/json" },
   body: JSON.stringify(status) }).catch((e) => log("status upload failed:", e.message));
 
 // ------------------------------------------------------------------ main
@@ -150,6 +162,11 @@ async function main() {
     credentials: { accessKeyId: process.env.S3_ACCESS_KEY_ID, secretAccessKey: process.env.S3_SECRET_KEY },
   });
 
+  const inbound = (await db.query(
+    `select key, name, description, steps from call_scripts
+      where "inboundEligible" and "isActive" and deleted_at is null order by name`)).rows;
+  if (MODE === "maya") return runMaya(db, s3, inbound);
+
   // the sample is fixed once (kept in status.json), so a restart resumes the same calls
   const prev = await diarai("/bench/summary").catch(() => ({ status: null, calls: [] }));
   const finished = new Set(prev.calls.filter((c) => !c.error).map((c) => c.id));
@@ -166,10 +183,6 @@ async function main() {
   Object.assign(status, { state: "running", total: ids.length, ids, done: ids.filter((i) => finished.has(i)).length });
   await putStatus();
   log(`benchmark: ${ids.length} calls, ${status.done} already done`);
-
-  const inbound = (await db.query(
-    `select key, name, description, steps from call_scripts
-      where "inboundEligible" and "isActive" and deleted_at is null order by name`)).rows;
 
   let pending = Promise.resolve();
   for (const id of ids) {
@@ -249,9 +262,101 @@ async function main() {
 
 async function fail(id, e) {
   status.failed += 1;
-  status.errors.push({ id, error: String(e && e.message || e).slice(0, 300) });
+  const error = String(e && e.message || e).slice(0, 300);
+  status.errors.push({ id, error });
   log(`${id.slice(0, 8)} FAILED: ${e && e.message}`);
-  await upload(id, { error: String(e && e.message || e).slice(0, 300) }).catch(() => {});
+  if (MODE === "maya") await patch(id, { maya_error: error }).catch(() => {}); // never overwrite the first run
+  else await upload(id, { error }).catch(() => {});
+}
+
+const patch = (id, fields) => diarai(`/bench/calls/${id}`, { method: "PATCH",
+  headers: { "Content-Type": "application/json" }, body: JSON.stringify(fields) });
+
+// ------------------------------------------------------------------ maya pass
+async function runMaya(db, s3, inbound) {
+  const sum = await diarai("/bench/summary");
+  const ids = (sum.status && sum.status.ids) || [];
+  if (!ids.length) throw new Error("no diarai run to compare against (status.ids is empty)");
+  const byId = new Map(sum.calls.map((c) => [c.id, c]));
+  const finished = new Set(sum.calls.filter((c) => c.maya && c.maya.verdict).map((c) => c.id));
+  Object.assign(status, { state: "running", total: ids.length, ids, done: finished.size });
+  await putStatus();
+  log(`maya pass: ${ids.length} calls, ${finished.size} already done`);
+
+  let pending = Promise.resolve();
+  for (const id of ids) {
+    if (finished.has(id)) continue;
+    if (!byId.has(id) || byId.get(id).error) { log(`${id.slice(0, 8)} skipped: no diarai result`); continue; }
+    status.current = id;
+    await putStatus();
+    try {
+      const { call, scripts, assigned } = await loadCall(db, id, inbound);
+      const stored = await diarai(`/bench/calls/${id}`);
+      if (!stored.analysis_sarvam) throw new Error("no Sarvam analysis stored for this call");
+      const obj = await s3.send(new GetObjectCommand({ Bucket: process.env.S3_BUCKET_NAME, Key: call.recordingKey }));
+      const audio = Buffer.from(await obj.Body.transformToByteArray());
+      const name = call.recordingKey.split("/").pop() || `${id}.wav`;
+      const t0 = Date.now();
+      const tr = await transcribe(audio, name, "maya");
+      const wall = (Date.now() - t0) / 1000;
+      const fmt = formatEntries((tr.diarized_transcript || {}).entries);
+      log(`${id.slice(0, 8)} ${call.direction} ${call.durationSeconds}s -> maya ${wall.toFixed(0)}s, ${fmt.speakers} speakers`);
+      await pending;
+      pending = (async () => {
+        try {
+          const callCtx = { callId: call.callId, durationSeconds: call.durationSeconds,
+                            destinationNumber: call.destinationNumber, status: call.status };
+          // zdial's analysis code may have changed since the first pass: analyse the Sarvam transcript again with
+          // today's code, so maya is judged against Sarvam on the same prompt and model
+          const [Anow, C] = await Promise.all([
+            analyse(callCtx, stored.transcript_sarvam, scripts, assigned),
+            analyse(callCtx, fmt.text || (tr.transcript || ""), scripts, assigned),
+          ]);
+          const [vMaya, vMayaDiarai] = await Promise.all([
+            judge(Anow, C),
+            stored.analysis_diarai ? judge(stored.analysis_diarai, C) : null,
+          ]);
+          await patch(id, {
+            transcript_maya: fmt.text, speakers_maya: fmt.speakers, maya_seconds: Math.round(wall),
+            analysis_maya: C, analysis_sarvam_now: Anow, analysis_model: ANALYSIS_MODEL,
+            verdict_maya: vMaya, verdict_maya_vs_diarai: vMayaDiarai,
+            steps_maya: stepAgreement(Anow, C), maya_error: null,
+          });
+          status.done += 1;
+          log(`${id.slice(0, 8)} maya verdict ${vMaya.verdict} [${status.done}/${status.total}]`);
+        } catch (e) {
+          await fail(id, e);
+        }
+        await putStatus();
+      })();
+    } catch (e) {
+      await fail(id, e);
+      await putStatus();
+    }
+  }
+  await pending;
+  status.state = "finished";
+  status.current = null;
+  await putStatus();
+  await db.end();
+  log(`maya pass finished: ${status.done} done, ${status.failed} failed`);
+}
+
+async function loadCall(db, id, inbound) {
+  const { rows } = await db.query(
+    `select c."callId" as "callId", c."durationSeconds" as "durationSeconds", c."destinationNumber" as "destinationNumber",
+            c.status, c.direction, c."callScriptId" as "callScriptId", c."recordingKey" as "recordingKey"
+       from post_call_analysis p join call_sessions c on c."callId"::text = p.call_id where p.call_id = $1`, [id]);
+  const call = rows[0];
+  if (!call) throw new Error("call not found");
+  let scripts = [], assigned = false;
+  if (call.callScriptId) {
+    scripts = (await db.query(`select key, name, description, steps from call_scripts where id = $1`, [call.callScriptId])).rows;
+    assigned = scripts.length > 0;
+  } else if (call.direction === "inbound") {
+    scripts = inbound;
+  }
+  return { call, scripts, assigned };
 }
 
 main().catch(async (e) => {

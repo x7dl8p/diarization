@@ -64,6 +64,15 @@ def _row(d: dict) -> dict:
         "speakers": d.get("speakers"),
         "diarai_seconds": d.get("diarai_seconds"), "audio_seconds": d.get("audio_seconds"),
         "sarvam_mode": d.get("sarvam_mode"), "sarvam_ready_seconds": d.get("sarvam_ready_seconds"),
+        # second engine on the same recordings: diarai's diarization + maya-transcribe for the text
+        "maya": {
+            "verdict": (d.get("verdict_maya") or {}).get("verdict"),
+            "script": (d.get("analysis_maya") or {}).get("scriptKey"),
+            "score": (d.get("analysis_maya") or {}).get("scriptScore"),
+            "sentiment": (d.get("analysis_maya") or {}).get("sentiment"),
+            "steps": d.get("steps_maya"), "seconds": d.get("maya_seconds"), "speakers": d.get("speakers_maya"),
+            "error": d.get("maya_error"),
+        } if ("verdict_maya" in d or "maya_error" in d) else None,
     }
 
 
@@ -75,9 +84,14 @@ async def summary():
             rows.append(_row(json.loads(p.read_text(encoding="utf-8"))))
         except (ValueError, KeyError):
             continue
-    status_file = Path(config.BENCH_DIR, "status.json")
-    status = json.loads(status_file.read_text(encoding="utf-8")) if status_file.exists() else None
-    return {"status": status, "calls": rows}
+    runs = {}
+    for f in Path(config.BENCH_DIR).glob("status*.json"):
+        name = f.stem.partition("_")[2] or "diarai"
+        try:
+            runs[name] = json.loads(f.read_text(encoding="utf-8"))
+        except ValueError:
+            continue
+    return {"status": runs.get("diarai"), "runs": runs, "calls": rows}
 
 
 @router.get("/calls/{call_id}")
@@ -123,8 +137,22 @@ async def put_call(call_id: str, meta: str = Form(...), audio: UploadFile = File
     return {"ok": True}
 
 
+@router.patch("/calls/{call_id}")
+async def patch_call(call_id: str, fields: dict):
+    """Merge top-level fields into a stored call (a later run adding its own results)."""
+    p = Path(config.BENCH_DIR, "calls", _check_id(call_id) + ".json")
+    if not p.exists():
+        raise HTTPException(404, "no such call")
+    d = json.loads(p.read_text(encoding="utf-8"))
+    d.update({k: v for k, v in fields.items() if k != "id"})
+    _write_json(p, d)
+    return {"ok": True}
+
+
 @router.put("/status")
-async def put_status(status: dict):
+async def put_status(status: dict, run: str = "diarai"):
+    if not _ID.match(run):
+        raise HTTPException(400, "bad run name")
     status["updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    _write_json(_dir() / "status.json", status)
+    _write_json(_dir() / ("status.json" if run == "diarai" else f"status_{run}.json"), status)
     return {"ok": True}

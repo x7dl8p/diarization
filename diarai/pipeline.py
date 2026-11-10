@@ -152,6 +152,18 @@ def transcribe_unit(models: Models, audio: np.ndarray, language: str, offset: fl
     return words
 
 
+def maya_transcribe(clips: List[np.ndarray], style: str = "native", timeout: float = 600.0) -> List[str]:
+    """Texts for single-speaker clips (<= 30 s each) from the maya-transcribe service (diarai/maya_server.py)."""
+    import json
+    import urllib.request
+
+    body = b"".join(np.ascontiguousarray(c, dtype="<f4").tobytes() for c in clips)
+    req = urllib.request.Request(f"{config.MAYA_URL}/transcribe?style={style}", data=body, method="POST", headers={
+        "Content-Type": "application/octet-stream", "X-Lengths": ",".join(str(len(c)) for c in clips)})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return json.load(r)["texts"]
+
+
 def dedupe_crosstalk(units) -> List[Word]:
     """units: [(duration, words)]. Overlapping turns of two speakers are decoded separately, so the louder
     speaker's words can appear in both; keep a duplicated word only in the longer unit."""
@@ -169,12 +181,15 @@ def dedupe_crosstalk(units) -> List[Word]:
 
 class DiarAI:
     def __init__(self, models: Optional[Models] = None, language: Optional[str] = None, beam_size: int = 5,
-                 refine: bool = True, **model_kw):
-        """models: shared Models (default: the process-wide instance, created with **model_kw)."""
+                 refine: bool = True, asr: str = "whisper", **model_kw):
+        """models: shared Models (default: the process-wide instance, created with **model_kw).
+        asr: "whisper" (large-v3 / IndicWhisper for Hindi, in-process) or "maya" (maya-transcribe service,
+        Hindi only; same diarization, only the speech-to-text of each speaker's pieces changes)."""
         self.models = models or get_models(**model_kw)
-        self.language = language
+        self.language = "hi" if asr == "maya" else language
         self.beam_size = beam_size
         self.do_refine = refine
+        self.asr = asr
 
     # --------------------------------------------------------- diarization
     @torch.inference_mode()
@@ -347,6 +362,8 @@ class DiarAI:
 
     def transcribe_turns(self, wav, turns: List[Turn], language: str, pad: float = 0.2,
                          priority: int = BATCH) -> List[Word]:
+        if self.asr == "maya":
+            return self._transcribe_turns_maya(wav, turns, pad, priority)
         units = []
         for spk, a, b in self.speaker_segments(turns):
             i, j = max(0, int((a - pad) * SAMPLE_RATE)), min(len(wav), int((b + pad) * SAMPLE_RATE))
@@ -354,6 +371,28 @@ class DiarAI:
                 ws = transcribe_unit(self.models, wav[i:j], language, i / SAMPLE_RATE, spk, self.beam_size)
             units.append((b - a, ws))
 
+        return dedupe_crosstalk(units)
+
+    def _transcribe_turns_maya(self, wav, turns: List[Turn], pad: float, priority: int,
+                               batch: int = 8, max_words_per_sec: float = 6.0) -> List[Word]:
+        """The same speaker pieces, transcribed by maya-transcribe: one segment-level Word per piece (maya gives
+        no word timestamps), so an utterance's time span is its piece's."""
+        pieces = []
+        for spk, a, b in self.speaker_segments(turns):
+            i, j = max(0, int((a - pad) * SAMPLE_RATE)), min(len(wav), int((b + pad) * SAMPLE_RATE))
+            pieces.append((spk, a, b, wav[i:j]))
+        units = []
+        for k in range(0, len(pieces), batch):
+            group = pieces[k:k + batch]
+            with self.models.gpu(priority):  # shares the GPU with diarai's models; live streams still go first
+                texts = maya_transcribe([p[3] for p in group])
+            for (spk, a, b, _), text in zip(group, texts):
+                text = text.replace("\ufffd", "").strip()
+                # same junk guard as Whisper's: a tiny overlapped piece can come back as a hallucination
+                if not text or len(text.split()) > max(1.0, max_words_per_sec * (b - a)):
+                    units.append((b - a, []))
+                    continue
+                units.append((b - a, [Word(a, b, text, 1.0, spk)]))
         return dedupe_crosstalk(units)
 
     @staticmethod
@@ -401,7 +440,7 @@ class DiarAI:
         with self.models.gpu(priority):
             turns = timed("diarization", self.diarize, wav, num_speakers, min_speakers, max_speakers)
             torch.cuda.empty_cache()  # give the activation memory back before Whisper runs
-        language, lang_p = language or self.language, None
+        language, lang_p = ("hi" if self.asr == "maya" else language or self.language), None  # maya: Hindi only
         if language is None:
             with self.models.gpu(priority):  # vote over several 30 s speech windows
                 language, lang_p = timed("language_id", self.models.detect_language, wav, segments=4,

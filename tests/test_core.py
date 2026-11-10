@@ -231,3 +231,26 @@ def test_priority_lock_serves_high_priority_first():
     with lock(1):
         with lock(1):  # re-entrant
             pass
+
+
+def test_maya_asr_uses_speaker_pieces(monkeypatch):
+    """asr="maya": the same diarization pieces go to the maya service in batches; one segment Word per piece,
+    junk (too many words for the piece's length) dropped."""
+    from contextlib import nullcontext
+
+    import diarai.pipeline as P
+
+    sent = []
+
+    def fake(clips, **kw):
+        sent.append([len(c) for c in clips])
+        return ["नमस्ते सर" if len(c) > 16000 * 2 else "एक दो तीन चार पांच छह सात आठ नौ दस" for c in clips]
+
+    monkeypatch.setattr(P, "maya_transcribe", fake)
+    d = P.DiarAI.__new__(P.DiarAI)
+    d.models = type("M", (), {"gpu": lambda self, p: nullcontext()})()
+    d.asr = "maya"
+    wav = np.zeros(16000 * 40, dtype=np.float32)
+    words = d.transcribe_turns(wav, [P.Turn("0", 0, 5), P.Turn("1", 5.2, 9), P.Turn("0", 9.5, 10.0)], "hi")
+    assert len(sent) == 1 and len(sent[0]) == 3
+    assert [(w.speaker, w.start, w.end, w.text) for w in words] == [("0", 0, 5, "नमस्ते सर"), ("1", 5.2, 9, "नमस्ते सर")]

@@ -4,7 +4,7 @@
   const $ = (s) => document.querySelector(s);
   const home = $("#home"), view = $("#bench"), door = $("#door"), back = $("#benchback");
   const statsEl = $("#bstats"), listEl = $("#blist"), filterEl = $("#bfilter"), needKey = $("#bneedkey");
-  let rows = [], status = null, filter = "all", open = null, timer = null, audioUrl = null;
+  let rows = [], status = null, runs = {}, filter = "all", open = null, timer = null, audioUrl = null;
 
   const key = () => $("#key").value.trim();
   const el = (tag, cls, text) => {
@@ -57,14 +57,41 @@
       const d = await api("/bench/summary");
       rows = d.calls || [];
       status = d.status;
+      runs = d.runs || {};
       render();
     } catch (e) {
       statsEl.replaceChildren(el("p", "muted small", "Could not load the benchmark: " + e.message));
     }
-    if (status && (status.state === "running" || status.state === "starting")) timer = setTimeout(refresh, 10000);
+    if (Object.values(runs).some((x) => x && (x.state === "running" || x.state === "starting"))) timer = setTimeout(refresh, 10000);
   }
 
   // ---------------------------------------------------------------- stats
+  // second engine: diarai's diarization + maya-transcribe for the text, on the same recordings
+  function mayaStats(ok) {
+    const run = runs.maya;
+    const m = ok.filter((r) => r.maya && r.maya.verdict);
+    if (!m.length) {
+      return [stat("–", "maya-transcribe vs Sarvam", run ? `${run.state} · ${run.done || 0}/${run.total || "–"}` : "not run yet")];
+    }
+    const vm = tally(m.map((r) => ({ v: r.maya.verdict })), "v");
+    const vd = tally(m, "verdict"); // diarai on the same subset, for a fair side-by-side
+    const sc = m.filter((r) => r.script[0] || r.maya.script);
+    const sameSc = sc.filter((r) => r.script[0] === r.maya.script).length;
+    const st = m.reduce((a, r) => { const x = r.maya.steps; if (x) { a[0] += x.agree; a[1] += x.total; } return a; }, [0, 0]);
+    const audio = m.reduce((a, r) => a + (r.duration || 0), 0), took = m.reduce((a, r) => a + (r.maya.seconds || 0), 0);
+    const ready = median(m.map((r) => (num(r.maya.seconds) ? r.maya.seconds + (r.sarvam_mode === "live" && num(r.sarvam_ready_seconds) ? r.sarvam_ready_seconds : 0) : null)));
+    const state = run ? (run.state === "running" ? `running · ${run.done}/${run.total}` : run.state) : "";
+    return [
+      stat(pct(vm.same + vm.minor, m.length), "same conclusion (maya vs Sarvam)",
+        `same ${vm.same} · minor ${vm.minor} · different ${vm.different} · ${m.length} calls${state ? " · " + state : ""}`, verdictBar(vm)),
+      stat(`${pct(vd.same + vd.minor, m.length)} → ${pct(vm.same + vm.minor, m.length)}`, "same conclusion: diarai → maya",
+        `different: diarai ${vd.different} · maya ${vm.different} (same ${m.length} calls)`),
+      stat(pct(sameSc, sc.length), "same script picked (maya)", `${sameSc} of ${sc.length} graded · steps ${pct(st[0], st[1])}`),
+      stat(audio ? `${(took / audio).toFixed(2)}×` : "–", "maya transcription time / call length",
+        `≈${secs(ready)} hang-up to analysis (median)`),
+    ];
+  }
+
   function speedText(list) {
     const a = list.filter((r) => num(r.diarai_seconds) && num(r.duration) && r.duration > 0);
     const audio = a.reduce((x, r) => x + r.duration, 0), took = a.reduce((x, r) => x + r.diarai_seconds, 0);
@@ -125,10 +152,12 @@
         "hang-up to analysis ready, median: Sarvam → diarai",
         `Sarvam transcribed live in ${ok.filter((r) => r.sarvam_mode === "live").length}/${ok.length} calls`),
       stat(speedText(ok), "diarai transcription time / call length", totalText(ok)),
+      ...mayaStats(ok),
     );
 
     filterEl.replaceChildren();
-    const counts = { all: rows.length, different: v.different, minor: v.minor, same: v.same, failed: failed.length };
+    const counts = { all: rows.length, different: v.different, minor: v.minor, same: v.same, failed: failed.length,
+                     "maya different": ok.filter((r) => r.maya && r.maya.verdict === "different").length };
     for (const k of Object.keys(counts)) {
       const b = el("button", "chip", `${k} ${counts[k]}`);
       b.type = "button";
@@ -139,7 +168,8 @@
 
     const order = { different: 0, minor: 1, same: 2 };
     const shown = rows
-      .filter((r) => filter === "all" || (filter === "failed" ? r.error : r.verdict === filter))
+      .filter((r) => filter === "all" || (filter === "failed" ? r.error
+        : filter === "maya different" ? r.maya && r.maya.verdict === "different" : r.verdict === filter))
       .sort((a, b) => (a.error ? 3 : order[a.verdict] ?? 3) - (b.error ? 3 : order[b.verdict] ?? 3));
     listEl.replaceChildren();
     if (!shown.length) listEl.append(el("p", "muted small", rows.length ? "No calls in this filter." : "No results yet."));
@@ -154,7 +184,15 @@
       const sc = r.script[0] || r.script[1]
         ? `${r.script[0] || "none"} ${num(r.score[0]) ? r.score[0] : ""} → ${r.script[1] || "none"} ${num(r.score[1]) ? r.score[1] : ""}`
         : `${(r.sentiment[0] || "").toLowerCase()} → ${(r.sentiment[1] || "").toLowerCase()}`;
-      row.append(el("span", `verdict ${verdict}`, verdict), mid, el("div", "right", sc));
+      const chips = el("div", "chips");
+      chips.append(el("span", `verdict ${verdict}`, verdict));
+      if (r.maya) {
+        const mv = r.maya.error ? "failed" : r.maya.verdict || "pending";
+        const c = el("span", `verdict small ${mv}`, `maya ${mv}`);
+        c.title = "maya-transcribe vs Sarvam";
+        chips.append(c);
+      }
+      row.append(chips, mid, el("div", "right", sc));
       row.setAttribute("aria-expanded", String(open === r.id));
       row.addEventListener("click", () => toggle(r.id));
       listEl.append(row);
@@ -220,6 +258,15 @@
       : `Sarvam: transcribed after the call; zdial's analysis was stored ${secs(d.sarvam_ready_seconds)} after hang-up.`)
       + ` diarai: transcribed the recording in ${secs(d.diarai_seconds)}${ratio}, so with the same analysis the result would be ready about ${secs(diaraiReady(d))} after hang-up.`;
     box.append(timing);
+    if (d.verdict_maya) {
+      const m = el("p", "small");
+      const r = d.duration ? ` (${((d.maya_seconds || 0) / d.duration).toFixed(2)}× the call)` : "";
+      m.append(el("b", null, `maya verdict: ${d.verdict_maya.verdict}`),
+        document.createTextNode(` · maya vs diarai: ${d.verdict_maya_vs_diarai ? d.verdict_maya_vs_diarai.verdict : "–"} · maya transcribed in ${secs(d.maya_seconds)}${r}`));
+      box.append(m);
+    } else if (d.maya_error) {
+      box.append(el("p", "small muted", "maya: " + d.maya_error));
+    }
     const diffs = (d.verdict && d.verdict.differences) || [];
     if (diffs.length) {
       const ul = el("ul", "diffs");
@@ -239,9 +286,18 @@
     }
     const cols = el("div", "cols");
     cols.append(analysisCard("AI on Sarvam transcript", d.analysis_sarvam), analysisCard("AI on diarai transcript", d.analysis_diarai));
+    if (d.analysis_maya) cols.append(analysisCard("AI on maya transcript", d.analysis_maya));
     box.append(cols);
     const tx = el("div", "cols");
-    for (const [title, text] of [["Sarvam transcript (stored by zdial)", d.transcript_sarvam], ["diarai transcript", d.transcript_diarai]]) {
+    const txs = [["Sarvam transcript (stored by zdial)", d.transcript_sarvam], ["diarai transcript", d.transcript_diarai]];
+    if (d.transcript_maya !== undefined) txs.push(["maya transcript", d.transcript_maya]);
+    if (d.verdict_maya && (d.verdict_maya.differences || []).length) {
+      box.append(el("p", "small muted", "maya vs Sarvam differences:"));
+      const ul = el("ul", "diffs");
+      for (const x of d.verdict_maya.differences) ul.append(el("li", null, x));
+      box.append(ul);
+    }
+    for (const [title, text] of txs) {
       const c = el("div", "col");
       c.append(el("h3", null, title), el("pre", "tx", text || "(empty)"));
       tx.append(c);

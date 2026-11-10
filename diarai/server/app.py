@@ -166,7 +166,8 @@ async def speech_to_text(file: UploadFile = File(...), language_code: str = Form
     if num_speakers is not None and not 1 <= num_speakers <= 20:
         raise HTTPException(400, "num_speakers must be between 1 and 20")
     t0 = time.perf_counter()
-    result = await asyncio.to_thread(DiarAI(State.models), wav, num_speakers=num_speakers,
+    asr = "maya" if model.strip().lower() in ("maya", "maya-transcribe") else "whisper"
+    result = await asyncio.to_thread(DiarAI(State.models, asr=asr), wav, num_speakers=num_speakers,
                                      language=parse_lang(language_code), priority=BATCH)
     result.timings["total"] = time.perf_counter() - t0
     return result.to_sarvam(uuid.uuid4().hex, with_timestamps, with_diarization)
